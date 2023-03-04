@@ -7,15 +7,15 @@ type Props = {
   y: number;
 };
 
-export function Cursor({ color, x, y }: Props) {
+export function Cursor({ color="#fff", x=600, y=300 }: Props) {
   return (
     <svg
-      style={{
-        position: "absolute",
-        left: 0,
-        top: 0,
-        transform: `translateX(${x}px) translateY(${y}px)`,
-      }}
+      // style={{
+      //   position: "absolute",
+      //   left: 0,
+      //   top: 0,
+      //   transform: `translateX(${x}px) translateY(${y}px)`,
+      // }}
       width="24"
       height="36"
       viewBox="0 0 24 36"

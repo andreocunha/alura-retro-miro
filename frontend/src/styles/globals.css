@@ -99,3 +99,8 @@ a {
     color-scheme: dark;
   }
 }
+
+
+.react-flow__panel.bottom.right {
+  display: none;
+}
