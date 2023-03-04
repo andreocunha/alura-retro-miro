@@ -20,11 +20,30 @@ interface Coords {
   y: number;
 }
 
-interface MouseCoords {
-  [id: string]: Coords;
+// {
+//   id: '3',
+//   type: 'cursor',
+//   position: { 
+//     x: 600, 
+//     y: 300
+//   },
+//   data: {
+//     color: '#fff',
+//   }
+// }
+
+interface MouseProps {
+  [id: string]: {
+    id: string;
+    type: string;
+    position: Coords;
+    data: {
+      color: string;
+    }
+  }
 }
 
-let mouseCoords: MouseCoords = {};
+let mouseCoords: MouseProps = {};
 
 app.get('/', (req: Request, res: Response) => {
   res.status(200).send({ message: 'API do Alura Retro Miro funcionando!' });
@@ -32,9 +51,6 @@ app.get('/', (req: Request, res: Response) => {
 
 io.on('connection', (socket: Socket) => {
   console.log('new user: ', socket.id);
-
-  // enviar as coordenadas dos outros clientes para o cliente recém-conectado
-  // socket.emit('otherMouseCoords', getOtherMouseCoords(socket.id));
 
   socket.on('disconnect', () => {
     console.log('user disconnected: ', socket.id);
@@ -48,7 +64,14 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('mouseMove', async (coords: Coords) => {
     // atualizar as coordenadas do mouse do cliente
-    mouseCoords[socket.id] = coords;
+    mouseCoords[socket.id] = {
+      id: socket.id,
+      type: 'cursor',
+      position: coords,
+      data: {
+        color: '#fff',
+      }
+    }
     // console.log('mouseCoords: ', mouseCoords);
 
     io.emit('mouseCoords', mouseCoords);

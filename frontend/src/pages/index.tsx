@@ -1,15 +1,26 @@
 import styles from '@/styles/Home.module.css'
 import { useEffect, useState } from 'react'
-import { CursorsDisplay } from '../../components/CursorsDisplay'
 import { HeadTab } from '../../components/HeadTab';
 import ReactFlow, { Controls, Background, Node, useNodesState, NodeProps } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { Square } from '../../components/Square';
 import { Cursor } from '../../components/Cursor';
+import { socket } from '../../server/socket';
 
+interface Coords {
+  x: number;
+  y: number;
+}
 
-type NodeData = {
-  color?: string;
+interface MouseCoords {
+  [id: string]: {
+    id: string;
+    type: string;
+    position: Coords;
+    data: {
+      color: string;
+    }
+  }
 }
 
 const NODE_TYPES = {
@@ -52,26 +63,36 @@ const CURSOR_NODE = [
     data: {
       color: '#fff',
     }
-  },
+  }
 ]
 
 
 export default function Home() {
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [nodes, setNodes, onNodesChange] = useNodesState([...SQUARE_NODE, ...CURSOR_NODE]);
 
   useEffect(() => {
-    // atualizar o tamanho da janela quando ela é redimensionada
-    function handleResize() {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-    }
-    window.addEventListener('resize', handleResize);
-    handleResize();
+    socket.on('mouseCoords', (coords: MouseCoords) => {
+      // remover as coordenadas do próprio mouse
+      const newCoords = { ...coords };
+      delete newCoords[socket.id];
+      
+      // converter para array e atualizar o estado
+      const newCursors = Object.entries(newCoords).map(([id, cursor]) => ({
+        id: id,
+        type: 'cursor',
+        position: {
+          x: cursor.position.x,
+          y: cursor.position.y,
+        },
+        data: {
+          color: cursor.data.color,
+        }
+      }));
+      // update the nodes with the new cursors data
+      setNodes((ns) => ns.concat(newCursors));
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [])
+    });
+  },[])
 
   // useEffect(() => {
   //   console.log('nodes', nodes);
@@ -96,8 +117,18 @@ export default function Home() {
             nodeTypes={NODE_TYPES}
             nodes={nodes}
             onNodesChange={onNodesChange}
+            onMouseMove={(e) => {
+              console.log(e);
+              socket.emit('mouseMove', {
+                x: e.clientX,
+                y: e.clientY,
+              });
+            }}
           >
-            {/* <CursorsDisplay windowSize={windowSize} /> */}
+            {/* <CursorsDisplay 
+              windowSize={windowSize} 
+              setCursors={setCursors}
+            /> */}
             <Background />
             <Controls />
           </ReactFlow>

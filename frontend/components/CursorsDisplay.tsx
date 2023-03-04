@@ -14,10 +14,18 @@ interface Coords {
 }
 
 interface MouseCoords {
-  [id: string]: Coords;
+  [id: string]: {
+    id: string;
+    type: string;
+    position: Coords;
+    data: {
+      color: string;
+    }
+  }
 }
-
-export function CursorsDisplay({ windowSize }: { windowSize: WindowSize }) {
+// recebe windowSize e setCursors (Dispatch<SetStateAction<[]>>) como props
+export function CursorsDisplay({ windowSize, setCursors }: { windowSize: WindowSize, setCursors: any })
+{
   const [mouseCoords, setMouseCoords] = useState<Coords>({ x: 0, y: 0 });
   const [otherMouseCoords, setOtherMouseCoords] = useState<MouseCoords>({});
 
@@ -31,10 +39,28 @@ export function CursorsDisplay({ windowSize }: { windowSize: WindowSize }) {
       // remover as coordenadas do próprio mouse
       const newCoords = { ...coords };
       delete newCoords[socket.id];
+
+      // console.log(newCoords);
+      
+      // converter para array e atualizar o estado
+      const cursors = Object.entries(newCoords).map(([id, cursor]) => ({
+        id: id,
+        type: 'cursor',
+        position: {
+          x: (cursor.position.x / 100) * window?.innerWidth,
+          y: (cursor.position.y / 100) * window?.innerHeight,
+        },
+        data: {
+          color: chooseColorById(id),
+        }
+      }));
+      // console.log(cursors);
+      setCursors(cursors);
+
       setOtherMouseCoords(newCoords);
     });
 
-    return () => { }
+    return () => {}
   }, [])
 
   useEffect(() => {
@@ -57,14 +83,14 @@ export function CursorsDisplay({ windowSize }: { windowSize: WindowSize }) {
 
   return (
     <div>
-      {Object.entries(otherMouseCoords).map(([id, coords]) => (
-        <Cursor
-          key={id}
-          color={chooseColorById(id)}
-          x={(coords.x / 100) * windowSize.width}
-          y={(coords.y / 100) * windowSize.height}
-        />
-      ))}
+                {/* {Object.entries(otherMouseCoords).map(([id, coords]) => (
+            <Cursor
+              key={id}
+              color={chooseColorById(id)}
+              x={(coords.x / 100) * windowSize.width}
+              y={(coords.y / 100) * windowSize.height}
+            />
+          ))} */}
     </div>
   )
 }
