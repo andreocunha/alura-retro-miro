@@ -2,8 +2,8 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import { Server } from 'socket.io';
-import { configureRoutes } from './routes';
-import { configureSockets } from './sockets';
+import { configureRoutes } from './server/express';
+import { configureSockets } from './server/socket';
 
 const app = express();
 app.use(cors());
