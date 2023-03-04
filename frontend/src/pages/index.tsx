@@ -24,17 +24,30 @@ interface MouseCoords {
   }
 }
 
+interface CardProps {
+  [id: string]: {
+    id: string;
+    type: string;
+    position: Coords;
+    data: {
+      text: string;
+    }
+  }
+}
+
 const NODE_TYPES = {
   square: Square,
   cursor: (props: NodeProps<any>) => {
     const { color, x, y } = props.data;
     return <Cursor color={color} x={x} y={y} />;
   },
-  reference: Reference
+  // reference with setZoom function
+  reference: (props: NodeProps<any>) => <Reference data={props.data} />
 };
 
 export default function Home() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
     // add reference node
@@ -45,7 +58,9 @@ export default function Home() {
         x: 0, 
         y: 0
       },
-      data: {}
+      data: {
+        setZoom: setZoom
+      }
     };
     
     setNodes((ns) => ns.concat(referenceNode));
@@ -76,10 +91,35 @@ export default function Home() {
         return newNodes.concat(newCursorsData);
       });
     });
+
+    socket.on('cardCoords', (cards: CardProps) => {
+      // console.log(cards);
+      const newCardsData = Object.entries(cards).map(([id, card]) => ({
+        id: id,
+        type: card.type,
+        position: {
+          x: card.position.x,
+          y: card.position.y,
+        },
+        data: {
+          text: card.data.text,
+        }
+      }));
+
+      setNodes((ns) => {
+        const newNodes = ns.filter((n) => n.type !== 'square');
+        return newNodes.concat(newCardsData);
+      });
+    });
   },[])
+
+  // useEffect(() => {
+  //   console.log('zoom', zoom);
+  // }, [zoom])
 
   useEffect(() => {
     console.log('nodes', nodes);
+
   }, [nodes])
 
   function addNewSquare() {
@@ -87,9 +127,12 @@ export default function Home() {
       id: `${Math.random()}`,
       type: 'square',
       position: { x: 0, y: 0 },
-      data: {},
+      data: {
+        text: 'New Square',
+      },
     };
-    setNodes((ns) => ns.concat(newNode));
+    socket.emit('cardEvent', newNode);
+    // setNodes((ns) => ns.concat(newNode));
   }
 
   return (
@@ -101,12 +144,15 @@ export default function Home() {
             nodeTypes={NODE_TYPES}
             nodes={nodes}
             onNodesChange={onNodesChange}
+            onNodeDragStop={(e, node) => {
+              socket.emit('cardEvent', node);
+            }}
             onMouseMove={(e) => {
               const nodeElement = document.querySelector('.react-flow__node');
               if(!nodeElement) return;
               const nodeRect = nodeElement.getBoundingClientRect();
-              const x = e.clientX - nodeRect.left;
-              const y = e.clientY - nodeRect.top;
+              const x = (e.clientX - nodeRect.left) / zoom;
+              const y = (e.clientY - nodeRect.top) / zoom;
               console.log({x: x, y: y});
               socket.emit('mouseMove', { x, y });
             }}
