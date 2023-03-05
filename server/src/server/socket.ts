@@ -11,6 +11,11 @@ export function configureSockets(io: Server): void {
   io.on('connection', (socket: any) => {
     console.log('new user: ', socket.id);
 
+    setTimeout(() => {
+      socket.emit('mouseCoords', mouseCoords);
+      socket.emit('cardCoords', cardCoords);
+    }, 1000);
+
     socket.on('disconnect', () => {
       console.log('user disconnected: ', socket.id);
 

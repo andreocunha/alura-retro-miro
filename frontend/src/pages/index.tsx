@@ -1,12 +1,12 @@
 import styles from '@/styles/Home.module.css'
-import { use, useEffect, useState } from 'react'
-import { HeadTab } from '../../components/HeadTab';
+import { useEffect, useState } from 'react'
+import { HeadTab } from '../components/HeadTab';
 import ReactFlow, { Controls, Background, Node, useNodesState, NodeProps } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Square } from '../../components/Square';
-import { Cursor } from '../../components/Cursor';
-import { Reference } from '../../components/Reference';
-import { socket } from '../../server/socket';
+import { Square } from '../components/Square';
+import { Cursor } from '../components/Cursor';
+import { Reference } from '../components/Reference';
+import { socket } from '../server/socket';
 
 interface Coords {
   x: number;
@@ -38,8 +38,8 @@ interface CardProps {
 const NODE_TYPES = {
   square: Square,
   cursor: (props: NodeProps<any>) => {
-    const { color, x, y } = props.data;
-    return <Cursor color={color} x={x} y={y} />;
+    const { color } = props.data;
+    return <Cursor color={color}/>;
   },
   // reference with setZoom function
   reference: (props: NodeProps<any>) => <Reference data={props.data} />
@@ -48,6 +48,7 @@ const NODE_TYPES = {
 export default function Home() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [zoom, setZoom] = useState(1);
+  const [nodeMoving, setNodeMoving] = useState<Node | null>(null);
 
   useEffect(() => {
     // add reference node
@@ -106,20 +107,38 @@ export default function Home() {
         }
       }));
 
+      // atualiza a posição do nó que está sendo movido
+      let updatedNodes = newCardsData;
+      if(nodeMoving) {
+        const node = newCardsData.find((n) => n.id === nodeMoving.id);
+        if(node) {
+          updatedNodes = newCardsData.filter((n) => n.id !== nodeMoving.id);
+          updatedNodes.push(node);
+        }
+      }
+
       setNodes((ns) => {
         const newNodes = ns.filter((n) => n.type !== 'square');
-        return newNodes.concat(newCardsData);
+        return newNodes.concat(updatedNodes);
       });
     });
-  },[])
+  },[nodeMoving, nodes])
 
   // useEffect(() => {
   //   console.log('zoom', zoom);
   // }, [zoom])
 
   useEffect(() => {
-    console.log('nodes', nodes);
-
+    // console.log('nodes', nodes);
+    
+    // envia somente as coordenadas do nó que está sendo movido
+    if(nodeMoving) {
+      const node = nodes.find((n) => n.id === nodeMoving.id);
+      if(node) {
+        socket.emit('cardEvent', node);
+      }
+    }
+    
   }, [nodes])
 
   function addNewSquare() {
@@ -132,7 +151,6 @@ export default function Home() {
       },
     };
     socket.emit('cardEvent', newNode);
-    // setNodes((ns) => ns.concat(newNode));
   }
 
   return (
@@ -145,7 +163,10 @@ export default function Home() {
             nodes={nodes}
             onNodesChange={onNodesChange}
             onNodeDragStop={(e, node) => {
-              socket.emit('cardEvent', node);
+              setNodeMoving(null);
+            }}
+            onNodeDragStart={(e, node) => {
+              setNodeMoving(node);
             }}
             onMouseMove={(e) => {
               const nodeElement = document.querySelector('.react-flow__node');
@@ -153,7 +174,6 @@ export default function Home() {
               const nodeRect = nodeElement.getBoundingClientRect();
               const x = (e.clientX - nodeRect.left) / zoom;
               const y = (e.clientY - nodeRect.top) / zoom;
-              console.log({x: x, y: y});
               socket.emit('mouseMove', { x, y });
             }}
           >

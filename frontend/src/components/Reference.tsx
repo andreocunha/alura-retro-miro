@@ -19,7 +19,7 @@ export function Reference(props: any) {
       style={{
         width: 10,
         height: 10,
-        background: 'green',
+        background: 'transparent',
       }}
     />
   );

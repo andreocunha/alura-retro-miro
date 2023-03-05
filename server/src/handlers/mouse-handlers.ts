@@ -1,6 +1,7 @@
 import { Coords } from '../interfaces/common';
 import { MouseProps } from '../interfaces/mouse';
 import { Socket } from 'socket.io';
+import { getColorById } from '../utils/functions';
 
 export function handleMouseMove(socket: Socket, mouseCoords: MouseProps, io: any) {
   socket.on('mouseMove', async (coords: Coords) => {
@@ -9,7 +10,7 @@ export function handleMouseMove(socket: Socket, mouseCoords: MouseProps, io: any
       type: 'cursor',
       position: coords,
       data: {
-        color: '#fff',
+        color: getColorById(socket.id),
       }
     }
     console.log('mouseCoords: ', mouseCoords);

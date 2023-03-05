@@ -1,10 +1,10 @@
-import { COLORS } from "@/styles/colors";
+import { COLORS } from "./colors";
 
 export function removeNaoNumeros(str: string) {
   return str.replace(/\D/g, '');
 }
 
-export function chooseColorById(id: string) {
+export function getColorById(id: string) {
   // converte o ID em um número inteiro
   const num = parseInt(removeNaoNumeros(id));
 
