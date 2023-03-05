@@ -14,7 +14,7 @@ export interface MouseCoords {
   }
 }
 
-export interface CardProps {
+export interface NodeProps {
   [id: string]: {
     id: string;
     type: string;

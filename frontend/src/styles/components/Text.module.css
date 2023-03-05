@@ -1,0 +1,12 @@
+.textarea {
+  padding: 5px;
+  resize: none;
+  border: none;
+  outline: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  color: #fff;
+  font-weight: 400;
+  overflow: hidden;
+  background: none;
+}

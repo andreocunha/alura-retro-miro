@@ -1,19 +1,19 @@
 import { Server } from 'socket.io';
 import { MouseProps } from '../interfaces/mouse';
 import { handleMouseMove } from '../handlers/mouse-handlers';
-import { CardProps } from '../interfaces/card';
-import { handleCard } from '../handlers/card-handlers';
+import { NodeProps } from '../interfaces/node';
+import { handleNode } from '../handlers/node-handlers';
 
 export function configureSockets(io: Server): void {
   let mouseCoords: MouseProps = {};
-  let cardCoords: CardProps = {};
+  let nodeCoordss: NodeProps = {};
 
   io.on('connection', (socket: any) => {
     console.log('new user: ', socket.id);
 
     setTimeout(() => {
       socket.emit('mouseCoords', mouseCoords);
-      socket.emit('cardCoords', cardCoords);
+      socket.emit('nodeCoords', nodeCoordss);
     }, 1000);
 
     socket.on('disconnect', () => {
@@ -25,6 +25,6 @@ export function configureSockets(io: Server): void {
     });
 
     handleMouseMove(socket, mouseCoords, io);
-    handleCard(socket, cardCoords, io);
+    handleNode(socket, nodeCoordss, io);
   });
 }

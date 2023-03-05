@@ -1,6 +1,6 @@
 import { Coords } from "./common";
 
-export interface CardProps {
+export interface NodeProps {
   [id: string]: {
     id: string;
     type: string;

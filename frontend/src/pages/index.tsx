@@ -2,12 +2,12 @@ import styles from '@/styles/Home.module.css'
 import { useEffect, useState } from 'react'
 import { HeadTab } from '../components/HeadTab';
 import ReactFlow, { Controls, Background, useNodesState } from 'reactflow';
-import 'reactflow/dist/style.css';
 import { socket } from '../services/socket';
-import { CardProps, MouseCoords } from '@/types/interfaces';
+import { NodeProps, MouseCoords } from '@/types/interfaces';
 import { NODE_TYPES } from '@/types/NodeTypes';
 import { convertData } from '@/utils';
 
+import 'reactflow/dist/style.css';
 
 export default function Home() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -46,13 +46,13 @@ export default function Home() {
       });
     });
 
-    socket.on('cardCoords', (cards: CardProps) => {
-      // console.log(cards);
-      const newCardsData = convertData(cards);
+    socket.on('nodeCoords', (nodes: NodeProps) => {
+      // console.log(nodes);
+      const newnodesData = convertData(nodes);
 
       setNodes((ns) => {
         const newNodes = ns.filter((n) => n.type !== 'square');
-        return newNodes.concat(newCardsData);
+        return newNodes.concat(newnodesData);
       });
     });
   },[])
@@ -66,7 +66,31 @@ export default function Home() {
         text: '',
       },
     };
-    socket.emit('cardEvent', newNode);
+    socket.emit('nodeEvent', newNode);
+  }
+
+  function addNewText() {
+    const newNode = {
+      id: `${Math.random()}`,
+      type: 'text',
+      position: { x: 0, y: 0 },
+      data: {
+        text: 'Texto padrão',
+      },
+    };
+    socket.emit('nodeEvent', newNode);
+  }
+
+  function addNewDivider() {
+    const newNode = {
+      id: `${Math.random()}`,
+      type: 'divider',
+      position: { x: 0, y: 0 },
+      data: {
+        text: '',
+      },
+    };
+    socket.emit('nodeEvent', newNode);
   }
 
   return (
@@ -79,7 +103,7 @@ export default function Home() {
             nodes={nodes}
             onNodesChange={onNodesChange}
             onNodeDragStop={(e, node) => {
-              socket.emit('cardEvent', node);
+              socket.emit('nodeEvent', node);
             }}
             onMouseMove={(e) => {
               const nodeElement = document.querySelector('.react-flow__node');
@@ -95,6 +119,8 @@ export default function Home() {
           </ReactFlow>
         </div>
         <button onClick={addNewSquare}>Add Square</button>
+        <button onClick={addNewText}>Add Text</button>
+        <button onClick={addNewDivider}>Add Divider</button>
       </main>
     </>
   )
