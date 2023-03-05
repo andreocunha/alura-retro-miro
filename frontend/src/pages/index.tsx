@@ -1,54 +1,17 @@
 import styles from '@/styles/Home.module.css'
 import { useEffect, useState } from 'react'
 import { HeadTab } from '../components/HeadTab';
-import ReactFlow, { Controls, Background, Node, useNodesState, NodeProps } from 'reactflow';
+import ReactFlow, { Controls, Background, useNodesState } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Square } from '../components/Square';
-import { Cursor } from '../components/Cursor';
-import { Reference } from '../components/Reference';
-import { socket } from '../server/socket';
+import { socket } from '../services/socket';
+import { CardProps, MouseCoords } from '@/types/interfaces';
+import { NODE_TYPES } from '@/types/NodeTypes';
+import { convertData } from '@/utils';
 
-interface Coords {
-  x: number;
-  y: number;
-}
-
-interface MouseCoords {
-  [id: string]: {
-    id: string;
-    type: string;
-    position: Coords;
-    data: {
-      color: string;
-    }
-  }
-}
-
-interface CardProps {
-  [id: string]: {
-    id: string;
-    type: string;
-    position: Coords;
-    data: {
-      text: string;
-    }
-  }
-}
-
-const NODE_TYPES = {
-  square: Square,
-  cursor: (props: NodeProps<any>) => {
-    const { color } = props.data;
-    return <Cursor color={color}/>;
-  },
-  // reference with setZoom function
-  reference: (props: NodeProps<any>) => <Reference data={props.data} />
-};
 
 export default function Home() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [zoom, setZoom] = useState(1);
-  const [nodeMoving, setNodeMoving] = useState<Node | null>(null);
 
   useEffect(() => {
     // add reference node
@@ -74,17 +37,7 @@ export default function Home() {
       delete newCoords[socket.id];
       
       // converter para array e atualizar o estado
-      const newCursorsData = Object.entries(newCoords).map(([id, cursor]) => ({
-        id: id,
-        type: 'cursor',
-        position: {
-          x: cursor.position.x,
-          y: cursor.position.y,
-        },
-        data: {
-          color: cursor.data.color,
-        }
-      }));
+      const newCursorsData = convertData(newCoords)
 
       // atualizar o estado dos nós com os novos valores
       setNodes((ns) => {
@@ -95,51 +48,14 @@ export default function Home() {
 
     socket.on('cardCoords', (cards: CardProps) => {
       // console.log(cards);
-      const newCardsData = Object.entries(cards).map(([id, card]) => ({
-        id: id,
-        type: card.type,
-        position: {
-          x: card.position.x,
-          y: card.position.y,
-        },
-        data: {
-          text: card.data.text,
-        }
-      }));
-
-      // atualiza a posição do nó que está sendo movido
-      let updatedNodes = newCardsData;
-      if(nodeMoving) {
-        const node = newCardsData.find((n) => n.id === nodeMoving.id);
-        if(node) {
-          updatedNodes = newCardsData.filter((n) => n.id !== nodeMoving.id);
-          updatedNodes.push(node);
-        }
-      }
+      const newCardsData = convertData(cards);
 
       setNodes((ns) => {
         const newNodes = ns.filter((n) => n.type !== 'square');
-        return newNodes.concat(updatedNodes);
+        return newNodes.concat(newCardsData);
       });
     });
-  },[nodeMoving, nodes])
-
-  // useEffect(() => {
-  //   console.log('zoom', zoom);
-  // }, [zoom])
-
-  useEffect(() => {
-    // console.log('nodes', nodes);
-    
-    // envia somente as coordenadas do nó que está sendo movido
-    if(nodeMoving) {
-      const node = nodes.find((n) => n.id === nodeMoving.id);
-      if(node) {
-        socket.emit('cardEvent', node);
-      }
-    }
-    
-  }, [nodes])
+  },[])
 
   function addNewSquare() {
     const newNode = {
@@ -147,7 +63,7 @@ export default function Home() {
       type: 'square',
       position: { x: 0, y: 0 },
       data: {
-        text: 'New Square',
+        text: '',
       },
     };
     socket.emit('cardEvent', newNode);
@@ -163,10 +79,7 @@ export default function Home() {
             nodes={nodes}
             onNodesChange={onNodesChange}
             onNodeDragStop={(e, node) => {
-              setNodeMoving(null);
-            }}
-            onNodeDragStart={(e, node) => {
-              setNodeMoving(node);
+              socket.emit('cardEvent', node);
             }}
             onMouseMove={(e) => {
               const nodeElement = document.querySelector('.react-flow__node');

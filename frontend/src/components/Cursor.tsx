@@ -5,7 +5,7 @@ type Props = {
   color: string;
 };
 
-export function Cursor({ color="#fff" }: Props) {
+export function Cursor({ color="#ccc" }: Props) {
   return (
     <svg
       width="24"

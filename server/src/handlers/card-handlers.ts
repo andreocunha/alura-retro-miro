@@ -1,4 +1,3 @@
-import { Coords } from '../interfaces/common';
 import { CardProps } from '../interfaces/card';
 import { Socket } from 'socket.io';
 
@@ -16,7 +15,7 @@ export function handleCard(socket: Socket, cardCoords: CardProps, io: any) {
         text: card.data.text,
       }
     }
-    console.log('cardCoords: ', cardCoords);
+    // console.log('cardCoords: ', cardCoords);
 
     io.emit('cardCoords', cardCoords);
   });

@@ -1,9 +1,9 @@
+import { socket } from "@/services/socket";
 import React, { useState, useRef, useEffect } from "react";
-import { NodeProps } from "reactflow";
 import styles from "../styles/components/Square.module.css";
 
-export function Square({ data }: NodeProps) {
-  const [text, setText] = useState(data.text);
+export function Square(props: any) {
+  const [text, setText] = useState(props.data.data.text);
   const [squareHeight, setSquareHeight] = useState(100);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -17,6 +17,17 @@ export function Square({ data }: NodeProps) {
 
   function handleTextChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setText(event.target.value);
+    socket.emit('cardEvent', {
+      id: props.data.id,
+      type: props.data.type,
+      position: {
+        x: props.data.xPos,
+        y: props.data.yPos
+      },
+      data: {
+        text: event.target.value
+      }
+    });
   }
 
   useEffect(() => {
@@ -26,7 +37,11 @@ export function Square({ data }: NodeProps) {
       textarea.style.height = `${textarea.scrollHeight}px`;
       setSquareHeight(textarea.scrollHeight);
     }
-  }, []);
+  }, [text])
+
+  useEffect(() => {
+    setText(props.data.data.text);
+  }, [props.data.data.text])
 
   return (
     <div className={styles.square} style={{ height: `${squareHeight}px`, minHeight: 150 }}>
