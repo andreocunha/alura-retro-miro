@@ -13,7 +13,7 @@ const NODE_TYPES = {
   },
   reference: (props: NodeProps<any>) => <Reference data={props.data} />,
   text: (props: NodeProps<any>) => <Text data={props} />,
-  divider: (props: NodeProps<any>) => <Divider />
+  divider: (props: NodeProps<any>) => <Divider data={props} />
 };
 
 export { NODE_TYPES };

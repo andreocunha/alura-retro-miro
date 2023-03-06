@@ -11,11 +11,9 @@ export function handleNode(socket: Socket, nodeCoords: NodeProps, io: any) {
         x: node.position.x,
         y: node.position.y,
       },
-      data: {
-        text: node.data.text,
-      }
+      data: node.data,
     }
-    console.log('nodeCoords: ', nodeCoords);
+    // console.log('nodeCoords: ', nodeCoords);
 
     io.emit('nodeCoords', nodeCoords);
   });
@@ -28,11 +26,9 @@ export function handleNode(socket: Socket, nodeCoords: NodeProps, io: any) {
         x: node.position.x,
         y: node.position.y,
       },
-      data: {
-        text: node.data.text,
-      }
+      data: node.data,
     }
-    console.log('nodeCoords: ', nodeCoords);
+    // console.log('nodeCoords: ', nodeCoords);
 
     socket.broadcast.emit('nodeCoords', nodeCoords);
   });

@@ -13,7 +13,7 @@ export function handleMouseMove(socket: Socket, mouseCoords: MouseProps, io: any
         color: getColorById(socket.id),
       }
     }
-    console.log('mouseCoords: ', mouseCoords);
+    // console.log('mouseCoords: ', mouseCoords);
 
     io.emit('mouseCoords', mouseCoords);
   });

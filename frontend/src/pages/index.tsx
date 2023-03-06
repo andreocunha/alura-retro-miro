@@ -8,6 +8,7 @@ import { NODE_TYPES } from '@/types/NodeTypes';
 import { convertData } from '@/utils';
 
 import 'reactflow/dist/style.css';
+import { MenuOptions } from '@/components/MenuOptions';
 
 export default function Home() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -47,57 +48,21 @@ export default function Home() {
     });
 
     socket.on('nodeCoords', (nodes: NodeProps) => {
-      // console.log(nodes);
       const newnodesData = convertData(nodes);
 
+      // atualizar o estado dos nós com os novos valores
       setNodes((ns) => {
-        const newNodes = ns.filter((n) => n.type !== 'square');
+        const newNodes = ns.filter((n) => n.type !== 'text' && n.type !== 'square' && n.type !== 'divider');
         return newNodes.concat(newnodesData);
       });
     });
   },[])
 
-  function addNewSquare() {
-    const newNode = {
-      id: `${Math.random()}`,
-      type: 'square',
-      position: { x: 0, y: 0 },
-      data: {
-        text: '',
-      },
-    };
-    socket.emit('nodeEvent', newNode);
-  }
-
-  function addNewText() {
-    const newNode = {
-      id: `${Math.random()}`,
-      type: 'text',
-      position: { x: 0, y: 0 },
-      data: {
-        text: 'Texto padrão',
-      },
-    };
-    socket.emit('nodeEvent', newNode);
-  }
-
-  function addNewDivider() {
-    const newNode = {
-      id: `${Math.random()}`,
-      type: 'divider',
-      position: { x: 0, y: 0 },
-      data: {
-        text: '',
-      },
-    };
-    socket.emit('nodeEvent', newNode);
-  }
-
   return (
     <>
       <HeadTab title="Alura Retro Miro" />
       <main className={styles.main}>
-        <div style={{ height: '95vh', width: '100%' }}>
+        <div style={{ height: '100vh', width: '100%' }}>
           <ReactFlow
             nodeTypes={NODE_TYPES}
             nodes={nodes}
@@ -118,9 +83,8 @@ export default function Home() {
             <Controls />
           </ReactFlow>
         </div>
-        <button onClick={addNewSquare}>Add Square</button>
-        <button onClick={addNewText}>Add Text</button>
-        <button onClick={addNewDivider}>Add Divider</button>
+        
+        <MenuOptions />
       </main>
     </>
   )
