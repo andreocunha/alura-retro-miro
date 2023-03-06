@@ -4,7 +4,20 @@ import styles from "../styles/components/Text.module.css";
 
 export function Text(props: any) {
   const [text, setText] = useState(props.data.data.text);
+  const [squareHeight, setSquareHeight] = useState(100);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    setText(props.data.data.text);
+  }, [props.data.data.text])
+
+  function handleTextareaInput() {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    textarea.style.height = "auto";
+    textarea.style.height = `${textarea.scrollHeight}px`;
+    setSquareHeight(textarea.scrollHeight);
+  }
 
   function handleTextChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setText(event.target.value);
@@ -21,13 +34,23 @@ export function Text(props: any) {
     });
   }
 
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+      setSquareHeight(textarea.scrollHeight);
+    }
+  }, [text])
+
   return (
-    <div>
+    <div className={styles.square} style={{ height: `${squareHeight}px`, minHeight: 150 }}>
       <textarea
         ref={textareaRef}
         className={styles.textarea}
         value={text}
         onChange={handleTextChange}
+        onInput={handleTextareaInput}
       />
     </div>
   );
