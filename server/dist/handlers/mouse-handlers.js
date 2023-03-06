@@ -22,7 +22,7 @@ function handleMouseMove(socket, mouseCoords, io) {
             }
         };
         // console.log('mouseCoords: ', mouseCoords);
-        io.emit('mouseCoords', mouseCoords);
+        socket.broadcast.emit('mouseCoords', mouseCoords);
     }));
 }
 exports.handleMouseMove = handleMouseMove;

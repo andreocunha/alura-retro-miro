@@ -30,3 +30,16 @@ export function createNewNode(type: string, data: any) {
   
   socket.emit("nodeEvent", newNode);
 }
+
+export function removeDuplicates(nodes:any) {
+  const uniqueNodes = nodes.filter((node:any, index:any) => {
+    const _node = JSON.stringify(node);
+    return (
+      index ===
+      nodes.findIndex((obj:any) => {
+        return JSON.stringify(obj) === _node;
+      })
+    );
+  });
+  return uniqueNodes;
+}

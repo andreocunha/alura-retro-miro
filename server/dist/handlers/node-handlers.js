@@ -35,7 +35,7 @@ function handleNode(socket, nodeCoords, io) {
             },
             data: node.data,
         };
-        // console.log('nodeCoords: ', nodeCoords);
+        console.log('nodeCoords: ', nodeCoords);
         socket.broadcast.emit('nodeCoords', nodeCoords);
     }));
 }

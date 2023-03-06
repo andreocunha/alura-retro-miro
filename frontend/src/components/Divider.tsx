@@ -11,15 +11,23 @@ export function Divider(props: any) {
   const rotateControlRef = useRef(null);
   const dimensionsControlRef = useRef(null);
   const [rotation, setRotation] = useState(props?.data?.data?.rotation || 0);
+  const [width, setWidth] = useState(props?.data?.data?.width || 5);
+  const [height, setHeight] = useState(props?.data?.data?.height || 150);
   const [isEditing, setIsEditing] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
-  const [dimensions, setDimensions] = useState({
-    width: props?.data?.data?.width || 5,
-    height: props?.data?.data?.height || 150,
-  });
+
+  useEffect(() => {
+    if(!props?.data?.data?.width || !props?.data?.data?.height || !props?.data?.data?.rotation) {
+      return;
+    }
+    setWidth(props?.data?.data?.width);
+    setHeight(props?.data?.data?.height);
+    setRotation(props?.data?.data?.rotation);
+  }, [props])
 
   // a function to emit the new width, height and rotation to the server
   function handleStyleChange(width: number, height: number, rotation: number) {
+    // console.log('handleStyleChange', width, height, rotation);
     socket.emit('nodeEvent', {
       id: props.data.id,
       type: props.data.type,
@@ -35,38 +43,43 @@ export function Divider(props: any) {
     });
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      handleStyleChange(dimensions.width, dimensions.height, rotation);
-    }, 1000);
-  }, [dimensions, rotation]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     handleStyleChange(width, height, rotation);
+  //   }, 200);
+  // }, [width, height]);
 
-  useEffect(() => {
-    if (!rotateControlRef.current) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (!rotateControlRef.current) {
+  //     return;
+  //   }
 
-    const selection = select(rotateControlRef.current);
-    const dragHandler = drag().on('drag', (evt) => {
-      const dx = evt.x - 100;
-      const dy = evt.y - 100;
-      const rad = Math.atan2(dx, dy);
-      const deg = rad * (180 / Math.PI);
-      setRotation(180 - deg);
-    });
+  //   const selection = select(rotateControlRef.current);
+  //   const dragHandler = drag().on('drag', (evt) => {
+  //     const dx = evt.x - 100;
+  //     const dy = evt.y - 100;
+  //     const rad = Math.atan2(dx, dy);
+  //     const deg = rad * (180 / Math.PI);
+  //     setRotation(180 - deg);
+  //   });
 
-    selection.call(dragHandler as any);
-  }, []);
+  //   selection.call(dragHandler as any);
+  // }, []);
 
   return (
     <div
       style={{ 
         transform: `rotate(${rotation}deg)`,
-        width: isResizing ? '100%' : `${dimensions.width}px`,
-        height: isResizing ? '100%' : `${dimensions.height}px`,
+        width: isResizing ? '100%' : `${width}px`,
+        height: isResizing ? '100%' : `${height}px`,
       }}
       className={styles.divider}
-      onClick={() => setIsEditing(!isEditing)}
+      // on click outside, set isEditing to false
+      onClick={(event) => {
+        if (event.target === dimensionsControlRef.current) {
+          setIsEditing(!isEditing);
+        }
+      }}
       ref={dimensionsControlRef}
     >
       <NodeResizer 
@@ -75,10 +88,11 @@ export function Divider(props: any) {
         minHeight={150}
         onResizeStart={() => setIsResizing(true)} 
         onResizeEnd={(event, dimensions) => {
-          setDimensions({
-            width: dimensions.width,
-            height: dimensions.height,
-          })
+          setWidth(dimensions.width);
+          setHeight(dimensions.height);
+          setTimeout(() => {
+            handleStyleChange(dimensions.width, dimensions.height, rotation);
+          }, 200);
           setIsResizing(false);
         }}
       />
@@ -86,6 +100,11 @@ export function Divider(props: any) {
         ref={rotateControlRef}
         className={styles.rotateControl}
         style={{ display: isEditing ? 'block' : 'none' }}
+        onClick={() => {
+          const newRotation = rotation + 45;
+          setRotation(newRotation);
+          handleStyleChange(width, height, newRotation);
+        }}
       />
     </div>
   );

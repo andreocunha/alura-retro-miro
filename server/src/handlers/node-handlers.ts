@@ -28,7 +28,7 @@ export function handleNode(socket: Socket, nodeCoords: NodeProps, io: any) {
       },
       data: node.data,
     }
-    // console.log('nodeCoords: ', nodeCoords);
+    console.log('nodeCoords: ', nodeCoords);
 
     socket.broadcast.emit('nodeCoords', nodeCoords);
   });

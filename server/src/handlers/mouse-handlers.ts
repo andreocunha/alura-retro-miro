@@ -15,6 +15,6 @@ export function handleMouseMove(socket: Socket, mouseCoords: MouseProps, io: any
     }
     // console.log('mouseCoords: ', mouseCoords);
 
-    io.emit('mouseCoords', mouseCoords);
+    socket.broadcast.emit('mouseCoords', mouseCoords);
   });
 }

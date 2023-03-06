@@ -5,13 +5,14 @@ import ReactFlow, { Controls, Background, useNodesState } from 'reactflow';
 import { socket } from '../services/socket';
 import { NodeProps, MouseCoords } from '@/types/interfaces';
 import { NODE_TYPES } from '@/types/NodeTypes';
-import { convertData } from '@/utils';
+import { convertData, removeDuplicates } from '@/utils';
 
 import 'reactflow/dist/style.css';
 import { MenuOptions } from '@/components/MenuOptions';
 
 export default function Home() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodeMoving, setNodeMoving] = useState<NodeProps | null>(null);
   const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
@@ -37,26 +38,41 @@ export default function Home() {
       const newCoords = { ...coords };
       delete newCoords[socket.id];
       
-      // converter para array e atualizar o estado
-      const newCursorsData = convertData(newCoords)
-
+      // converter para array e remover duplicatas
+      const newCursorsData = removeDuplicates(convertData(newCoords));
+    
       // atualizar o estado dos nós com os novos valores
       setNodes((ns) => {
         const newNodes = ns.filter((n) => n.type !== 'cursor');
         return newNodes.concat(newCursorsData);
       });
     });
+    
 
     socket.on('nodeCoords', (nodes: NodeProps) => {
       const newnodesData = convertData(nodes);
-
+      
+      // Remove nós duplicados
+      const uniqueNodesData = removeDuplicates(newnodesData);
+    
       // atualizar o estado dos nós com os novos valores
       setNodes((ns) => {
         const newNodes = ns.filter((n) => n.type !== 'text' && n.type !== 'square' && n.type !== 'divider');
-        return newNodes.concat(newnodesData);
+        return newNodes.concat(uniqueNodesData);
       });
     });
+    
   },[])
+
+  useEffect(() => {
+    console.log('nodes', nodes);
+    // emite only the nodeMoving
+    if(nodeMoving) {
+      const node = nodes.find((n) => n.id === nodeMoving.id.toString());
+      socket.emit('nodeMove', node);
+    }
+
+  },[nodes])
 
   return (
     <>
@@ -67,8 +83,14 @@ export default function Home() {
             nodeTypes={NODE_TYPES}
             nodes={nodes}
             onNodesChange={onNodesChange}
+            onNodeDragStart={(e, node) => {
+              console.log('onNodeDragStart', node);
+              setNodeMoving(node as any);
+            }}
             onNodeDragStop={(e, node) => {
-              socket.emit('nodeEvent', node);
+              // socket.emit('nodeEvent', node);
+              console.log('onNodeDragStop', node);
+              setNodeMoving(null);
             }}
             onMouseMove={(e) => {
               const nodeElement = document.querySelector('.react-flow__node');

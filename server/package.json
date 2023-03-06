@@ -4,6 +4,7 @@
   "description": "Servidor do miro da Alura",
   "main": "index.ts",
   "scripts": {
+    "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
     "build": "npx tsc"
   },

@@ -5,42 +5,7 @@ import styles from "../styles/components/Square.module.css";
 export function Square(props: any) {
   const [text, setText] = useState(props.data.data.text);
   const [squareHeight, setSquareHeight] = useState(100);
-  const [typingTimer, setTypingTimer] = useState<NodeJS.Timeout | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  function handleKeyDown(): void {
-    if (typingTimer) {
-      clearTimeout(typingTimer);
-    }
-  }
-
-  function handleKeyUp(): void {
-    if (typingTimer) {
-      clearTimeout(typingTimer);
-    }
-    setTypingTimer(setTimeout(() => {
-      console.log('O usuário parou de digitar.');
-      socket.emit('nodeEvent', {
-        id: props.data.id,
-        type: props.data.type,
-        position: {
-          x: props.data.xPos,
-          y: props.data.yPos
-        },
-        data: {
-          text: text
-        }
-      });
-    }, 1000));
-  }
-
-  useEffect(() => {
-    return () => {
-      if (typingTimer) {
-        clearTimeout(typingTimer);
-      }
-    };
-  }, [typingTimer]);
 
 
   function handleTextareaInput() {
@@ -53,6 +18,17 @@ export function Square(props: any) {
 
   function handleTextChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setText(event.target.value);
+    socket.emit('nodeMove', {
+      id: props.data.id,
+      type: props.data.type,
+      position: {
+        x: props.data.xPos,
+        y: props.data.yPos
+      },
+      data: {
+        text: event.target.value
+      }
+    });
   }
 
   useEffect(() => {
@@ -76,8 +52,6 @@ export function Square(props: any) {
         value={text}
         onChange={handleTextChange}
         onInput={handleTextareaInput}
-        onKeyDown={handleKeyDown}
-        onKeyUp={handleKeyUp}
       />
     </div>
   );
