@@ -66,7 +66,6 @@ export default function Home() {
 
   useEffect(() => {
     console.log('nodes', nodes);
-    // emite only the nodeMoving
     if(nodeMoving) {
       const node = nodes.find((n) => n.id === nodeMoving.id.toString());
       socket.emit('nodeMove', node);
@@ -84,12 +83,9 @@ export default function Home() {
             nodes={nodes}
             onNodesChange={onNodesChange}
             onNodeDragStart={(e, node) => {
-              console.log('onNodeDragStart', node);
               setNodeMoving(node as any);
             }}
             onNodeDragStop={(e, node) => {
-              // socket.emit('nodeEvent', node);
-              console.log('onNodeDragStop', node);
               setNodeMoving(null);
             }}
             onMouseMove={(e) => {
@@ -99,6 +95,9 @@ export default function Home() {
               const x = (e.clientX - nodeRect.left) / zoom;
               const y = (e.clientY - nodeRect.top) / zoom;
               socket.emit('mouseMove', { x, y });
+            }}
+            onNodesDelete={(nodes) => {
+              socket.emit('nodeDelete', nodes[0]);
             }}
           >
             <Background />

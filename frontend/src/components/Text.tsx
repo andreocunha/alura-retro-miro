@@ -6,9 +6,13 @@ export function Text(props: any) {
   const [text, setText] = useState(props.data.data.text);
   const [squareHeight, setSquareHeight] = useState(100);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
-    setText(props.data.data.text);
+    if(!isTyping){
+      setText(props.data.data.text);
+    }
   }, [props.data.data.text])
 
   function handleTextareaInput() {
@@ -21,6 +25,14 @@ export function Text(props: any) {
 
   function handleTextChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setText(event.target.value);
+    setIsTyping(true);
+    if(typingTimeoutRef.current !== null) {
+      clearInterval(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+    }, 500);
+
     socket.emit('nodeMove', {
       id: props.data.id,
       type: props.data.type,
@@ -31,7 +43,7 @@ export function Text(props: any) {
       data: {
         text: event.target.value
       }
-    });
+    });    
   }
 
   useEffect(() => {

@@ -32,4 +32,9 @@ export function handleNode(socket: Socket, nodeCoords: NodeProps, io: any) {
 
     socket.broadcast.emit('nodeCoords', nodeCoords);
   });
+
+  socket.on('nodeDelete', async (node: any) => {
+    delete nodeCoords[node.id];
+    socket.broadcast.emit('nodeCoords', nodeCoords);
+  });
 }
