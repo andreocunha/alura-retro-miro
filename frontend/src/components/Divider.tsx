@@ -15,7 +15,6 @@ export function Divider(props: any) {
     //   return;
     // }
     if(!isEditing) {
-      console.log('useEffect', props?.data?.data?.width, props?.data?.data?.height, props?.data?.data?.rotation);
       setWidth(props?.data?.data?.width);
       setHeight(props?.data?.data?.height);
       setRotation(props?.data?.data?.rotation);
@@ -25,7 +24,7 @@ export function Divider(props: any) {
   // a function to emit the new width, height and rotation to the server
   function handleStyleChange(width: number, height: number, rotation: number) {
     console.log('handleStyleChange', width, height, rotation);
-    socket.emit('nodeMove', {
+    socket.emit('nodeEvent', {
       id: props.data.id,
       type: props.data.type,
       position: {
