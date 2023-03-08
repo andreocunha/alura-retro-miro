@@ -1,3 +1,4 @@
+import { NodeProps } from "../interfaces/node";
 import { COLORS } from "./colors";
 
 export function removeNaoNumeros(str: string) {
@@ -16,4 +17,17 @@ export function getColorById(id: string) {
 
   // retorna a cor correspondente ao índice
   return COLORS[index];
+}
+
+export function convertObjToArray(data: NodeProps) {
+  const newData = Object.entries(data).map(([id, cursor]) => ({
+    id: id,
+    type: cursor.type,
+    position: {
+      x: cursor.position.x,
+      y: cursor.position.y,
+    },
+    data: cursor.data,
+  }));
+  return newData;
 }

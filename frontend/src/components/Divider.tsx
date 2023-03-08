@@ -58,6 +58,8 @@ export function Divider(props: any) {
         transform: `rotate(${rotation}deg)`,
         width: `${width}px`,
         height: `${height}px`,
+        // add blue border when editing
+        border: isEditing ? '1.5px solid #0f87ff' : 'none'
       }}
       className={styles.divider}
       // on click outside, set isEditing to false

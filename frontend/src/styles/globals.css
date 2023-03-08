@@ -104,7 +104,7 @@ a {
 }
 
 .react-flow__node {
-  transition: all 0.35s ease-out;
+  transition: all 0.25s ease-out;
 }
 
 /* Chrome, Safari, Edge, Opera */

@@ -3,21 +3,19 @@ import { useEffect, useState } from 'react'
 import { HeadTab } from '../components/HeadTab';
 import ReactFlow, { Controls, Background, useNodesState } from 'reactflow';
 import { socket } from '../services/socket';
-import { NodeProps, MouseCoords } from '@/types/interfaces';
+import { GenericNode, NodeProps } from '@/types/interfaces';
 import { NODE_TYPES } from '@/types/NodeTypes';
-import { convertData, removeDuplicates } from '@/utils';
+import { removeDuplicates } from '@/utils';
 
 import 'reactflow/dist/style.css';
 import { MenuOptions } from '@/components/MenuOptions';
 
 export default function Home() {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [nodeMoving, setNodeMoving] = useState<NodeProps | null>(null);
+  const [nodeMoving, setNodeMoving] = useState<GenericNode | null>(null);
   const [zoom, setZoom] = useState(1);
-
-  useEffect(() => {
-    // add reference node
-    const referenceNode = {
+  const [deletedElements, setDeletedElements] = useState<GenericNode[] | null | any>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([
+    {
       id: '0',
       type: 'reference',
       position: { 
@@ -27,51 +25,90 @@ export default function Home() {
       data: {
         setZoom: setZoom
       }
-    };
-    
-    setNodes((ns) => ns.concat(referenceNode));
-  },[])
+    }
+  ]);
 
   useEffect(() => {
-    socket.on('mouseCoords', (coords: MouseCoords) => {
-      // remover as coordenadas do próprio mouse
-      const newCoords = { ...coords };
-      delete newCoords[socket.id];
-      
-      // converter para array e remover duplicatas
-      const newCursorsData = removeDuplicates(convertData(newCoords));
-    
-      // atualizar o estado dos nós com os novos valores
-      setNodes((ns) => {
-        const newNodes = ns.filter((n) => n.type !== 'cursor');
-        return newNodes.concat(newCursorsData);
-      });
+    socket.on('loadNodes', (loadNodes: NodeProps[]) => {
+      // add the nodes after the reference node
+      const newNodes = [...nodes, ...loadNodes];
+      setNodes(newNodes);
     });
-    
 
-    socket.on('nodeCoords', (nodes: NodeProps) => {
-      const newnodesData = convertData(nodes);
-      
-      // Remove nós duplicados
-      const uniqueNodesData = removeDuplicates(newnodesData);
-    
-      // atualizar o estado dos nós com os novos valores
-      setNodes((ns) => {
-        const newNodes = ns.filter((n) => n.type !== 'text' && n.type !== 'square' && n.type !== 'divider');
-        return newNodes.concat(uniqueNodesData);
-      });
+    socket.on('nodeCoords', (node: NodeProps) => {
+      if (!node || Object.keys(node).length === 0) return;
+      // console.log('node', node);
+  
+      const nodeIndex = nodes.findIndex((n) => n?.id === node.id.toString());
+
+      // remove duplicate nodes
+      const nodesWithoutDuplicates = removeDuplicates(nodes);
+  
+      if (nodeIndex !== -1) {
+        const newNodes = [...nodesWithoutDuplicates];
+        newNodes[nodeIndex] = node;
+        setNodes(newNodes);
+      } else {
+        // add in nodesWithoutDuplicates the new node
+        const newNodes = [...nodesWithoutDuplicates, node];
+        setNodes(newNodes);
+      }
+    });
+
+    socket.on('nodeDeleted', (nodeId: string) => {
+      const nodeIndex = nodes.findIndex((n) => n?.id === nodeId);
+      if (nodeIndex !== -1) {
+        const newNodes = [...nodes];
+        newNodes.splice(nodeIndex, 1);
+        setNodes(newNodes);
+      }
+    });
+
+    socket.on('userDisconnect', (id: string) => {
+      const nodeIndex = nodes.findIndex((n) => n?.id === id);
+      if (nodeIndex !== -1) {
+        const newNodes = [...nodes];
+        newNodes.splice(nodeIndex, 1);
+        setNodes(newNodes);
+      }
     });
     
-  },[])
+  },[nodes]);
 
   useEffect(() => {
     console.log('nodes', nodes);
     if(nodeMoving) {
       const node = nodes.find((n) => n.id === nodeMoving.id.toString());
-      socket.emit('nodeMove', node);
+      socket.emit('nodeMove', {
+        id: node?.id,
+        position: node?.position,
+        type: node?.type,
+        data: node?.data,
+        zIndex: node?.zIndex
+      });
     }
 
   },[nodes])
+
+  useEffect(() => {
+    function handleKeyPress(event: KeyboardEvent) {
+      // control + z or command + z
+      if ((event.ctrlKey || event.metaKey) && event.key === "z") {
+        if(deletedElements && deletedElements.length > 0){
+          const newDeletedElements = [...deletedElements];
+          const lastElement = newDeletedElements.pop();
+          setDeletedElements(newDeletedElements);
+          socket.emit('nodeEvent', lastElement);
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, []);
 
   return (
     <>
@@ -97,7 +134,10 @@ export default function Home() {
               socket.emit('mouseMove', { x, y });
             }}
             onNodesDelete={(nodes) => {
-              socket.emit('nodeDelete', nodes[0]);
+              if(nodes[0]){
+                socket.emit('nodeDelete', nodes[0].id);
+                setDeletedElements([...deletedElements, nodes[0]]);
+              }
             }}
           >
             <Background />

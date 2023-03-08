@@ -14,7 +14,7 @@ export function convertData(data: GenericNode) {
   return newData;
 }
 
-export function createNewNode(type: string, data: any) {
+export function createNewNode(type: string, data: any, zIndex?: number) {
   const middleX = window.innerWidth / 2;
   const middleY = window.innerHeight / 2;
 
@@ -26,20 +26,17 @@ export function createNewNode(type: string, data: any) {
       y: middleY,
     },
     data: data,
+    zIndex: zIndex || 1000,
   };
   
   socket.emit("nodeEvent", newNode);
 }
 
 export function removeDuplicates(nodes:any) {
-  const uniqueNodes = nodes.filter((node:any, index:any) => {
-    const _node = JSON.stringify(node);
-    return (
-      index ===
-      nodes.findIndex((obj:any) => {
-        return JSON.stringify(obj) === _node;
-      })
-    );
+  // remove duplicates by id
+  const uniqueNodes = nodes.filter((node: any, index: number, self: any) => {
+    return index === self.findIndex((t: any) => t.id === node.id);
   });
+  
   return uniqueNodes;
 }

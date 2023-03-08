@@ -5,8 +5,6 @@ export interface NodeProps {
     id: string;
     type: string;
     position: Coords;
-    data: {
-      text: string;
-    }
+    data: any;
   }
 }

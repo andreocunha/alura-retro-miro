@@ -7,12 +7,12 @@ export function MenuOptions(){
   return (
     <div className={styles.container}>
         <button 
-          onClick={() => createNewNode('square', { text: '' })}
+          onClick={() => createNewNode('square', { text: '' }, 1000)}
           className={styles.squareButton}
         >
         </button>
         <button 
-          onClick={() => createNewNode('text', { text: 'Texto padrão...' })}
+          onClick={() => createNewNode('text', { text: 'Texto padrão...' }, 1500)}
           className={styles.textButton}
         >
             <Image
@@ -23,7 +23,7 @@ export function MenuOptions(){
             />
         </button>
         <button 
-          onClick={() => createNewNode('divider', { width: 5, height: 150, rotation: 0 })}
+          onClick={() => createNewNode('divider', { width: 5, height: 150, rotation: 0 }, 500)}
           className={styles.dividerButton}
         >
           <div className={styles.divider}></div>

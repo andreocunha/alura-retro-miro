@@ -8,6 +8,7 @@ export function Text(props: any) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     if(!isTyping){
@@ -23,6 +24,15 @@ export function Text(props: any) {
     setSquareHeight(textarea.scrollHeight);
   }
 
+  function handleTextareaFocus() {
+    setIsFocused(!isFocused);
+  }
+  
+  function deleteNode() {
+    console.log('delete node');
+    socket.emit('deleteNode', props.data.id);
+  }
+
   function handleTextChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setText(event.target.value);
     setIsTyping(true);
@@ -33,7 +43,7 @@ export function Text(props: any) {
       setIsTyping(false);
     }, 500);
 
-    socket.emit('nodeMove', {
+    socket.emit('nodeEvent', {
       id: props.data.id,
       type: props.data.type,
       position: {
@@ -56,7 +66,13 @@ export function Text(props: any) {
   }, [text])
 
   return (
-    <div className={styles.square} style={{ height: `${squareHeight}px`, minHeight: 150 }}>
+    <div className={styles.square} 
+      style={{ 
+        height: `${squareHeight+40}px`, 
+        border: isFocused ? '1px solid #ccc' : 'none',
+      }}
+      onClick={handleTextareaFocus}
+    >
       <textarea
         ref={textareaRef}
         className={styles.textarea}

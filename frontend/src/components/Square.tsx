@@ -33,7 +33,7 @@ export function Square(props: any) {
       setIsTyping(false);
     }, 500);
     
-    socket.emit('nodeMove', {
+    socket.emit('nodeEvent', {
       id: props.data.id,
       type: props.data.type,
       position: {

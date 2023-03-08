@@ -4,25 +4,19 @@ export interface Coords {
 }
 
 export interface MouseCoords {
-  [id: string]: {
-    id: string;
-    type: string;
-    position: Coords;
-    data: {
-      color: string;
-    }
+  id: string;
+  type: string;
+  position: Coords;
+  data: {
+    color: string;
   }
 }
 
 export interface NodeProps {
-  [id: string]: {
-    id: string;
-    type: string;
-    position: Coords;
-    data: {
-      text: string;
-    }
-  }
+  id: string;
+  type: string;
+  position: Coords;
+  data: any;
 }
 
 export interface GenericNode {

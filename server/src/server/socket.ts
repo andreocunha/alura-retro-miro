@@ -1,30 +1,26 @@
 import { Server } from 'socket.io';
-import { MouseProps } from '../interfaces/mouse';
 import { handleMouseMove } from '../handlers/mouse-handlers';
 import { NodeProps } from '../interfaces/node';
 import { handleNode } from '../handlers/node-handlers';
+import { convertObjToArray } from '../utils/functions';
 
 export function configureSockets(io: Server): void {
-  let mouseCoords: MouseProps = {};
-  let nodeCoordss: NodeProps = {};
+  let nodeCoords: NodeProps = {};
 
   io.on('connection', (socket: any) => {
     console.log('new user: ', socket.id);
 
     setTimeout(() => {
-      socket.emit('mouseCoords', mouseCoords);
-      socket.emit('nodeCoords', nodeCoordss);
+      const nodeArray = convertObjToArray(nodeCoords);
+      socket.emit('loadNodes', nodeArray);
     }, 1000);
 
     socket.on('disconnect', () => {
       console.log('user disconnected: ', socket.id);
-
-      delete mouseCoords[socket.id];
-
-      io.emit('mouseCoords', mouseCoords);
+      io.emit('userDisconnect', socket.id as string);
     });
 
-    handleMouseMove(socket, mouseCoords, io);
-    handleNode(socket, nodeCoordss, io);
+    handleMouseMove(socket);
+    handleNode(socket, nodeCoords, io);
   });
 }

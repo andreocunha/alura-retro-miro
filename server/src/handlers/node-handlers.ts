@@ -4,37 +4,23 @@ import { Socket } from 'socket.io';
 export function handleNode(socket: Socket, nodeCoords: NodeProps, io: any) {
   // listen for node
   socket.on('nodeEvent', async (node: any) => {
-    nodeCoords[node.id] = {
-      id: node.id,
-      type: node.type,
-      position: {
-        x: node.position.x,
-        y: node.position.y,
-      },
-      data: node.data,
-    }
-    // console.log('nodeCoords: ', nodeCoords);
-
-    io.emit('nodeCoords', nodeCoords);
+    nodeCoords[node.id] = node;
+    // show the length of the object
+    console.log('nodeCoords Length: ', Object.keys(nodeCoords).length);
+    console.log('nodeCoords: ', node);
+    
+    io.emit('nodeCoords', node);
   });
 
   socket.on('nodeMove', async (node: any) => {
-    nodeCoords[node.id] = {
-      id: node.id,
-      type: node.type,
-      position: {
-        x: node.position.x,
-        y: node.position.y,
-      },
-      data: node.data,
-    }
-    console.log('nodeCoords: ', nodeCoords);
+    nodeCoords[node.id] = node;
+    console.log('nodeCoords: ', node);
 
-    socket.broadcast.emit('nodeCoords', nodeCoords);
+    socket.broadcast.emit('nodeCoords', node);
   });
 
-  socket.on('nodeDelete', async (node: any) => {
-    delete nodeCoords[node.id];
-    socket.broadcast.emit('nodeCoords', nodeCoords);
+  socket.on('nodeDelete', async (nodeId: string) => {
+    delete nodeCoords[nodeId];
+    socket.broadcast.emit('nodeDeleted', nodeId);
   });
 }
