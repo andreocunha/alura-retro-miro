@@ -48,7 +48,8 @@ export function Text(props: any) {
       },
       data: {
         text: event.target.value
-      }
+      },
+      zIndex: props.data.zIndex
     });    
   }
 
