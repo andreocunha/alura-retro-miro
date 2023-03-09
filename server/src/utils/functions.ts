@@ -28,6 +28,7 @@ export function convertObjToArray(data: NodeProps) {
       y: cursor.position.y,
     },
     data: cursor.data,
+    zIndex: cursor.zIndex,
   }));
   return newData;
 }

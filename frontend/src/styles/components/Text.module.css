@@ -10,7 +10,7 @@
   border: none;
   font-family: 'Roboto', sans-serif;
   font-size: 20px;
-  color: #fff;
+  color: var(--text-color);
   font-weight: 400;
   overflow: hidden;
   background: transparent;

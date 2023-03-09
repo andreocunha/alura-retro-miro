@@ -8,6 +8,8 @@ export function Square(props: any) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+  const dimensionsControlRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if(!isTyping){
@@ -42,7 +44,8 @@ export function Square(props: any) {
       },
       data: {
         text: event.target.value
-      }
+      },
+      zIndex: props.data.zIndex
     });
   }
 
@@ -55,14 +58,45 @@ export function Square(props: any) {
     }
   }, [text])
 
+  useEffect(() => {
+    // if press esc key, set isEditing to false
+    const handleKeyDown = (event: { keyCode: number; }) => {
+      if (event.keyCode === 27) {
+        setIsClicked(false);
+      }
+    };
+
+    // if press or click in square, set isClicked to true
+    const handleMouseDown = (event: { target: any; }) => {
+      if (dimensionsControlRef.current?.contains(event.target)) {
+        setIsClicked(true);
+      } else {
+        setIsClicked(false);
+      }
+    };
+
+    return () => {
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('click', handleMouseDown);
+    };
+  }, [dimensionsControlRef]);
+
   return (
-    <div className={styles.square} style={{ height: `${squareHeight}px`, minHeight: 150 }}>
+    <div 
+      className={styles.square} 
+      style={{ 
+        height: `${squareHeight}px`, 
+        minHeight: 150,
+        border: isClicked ? '2px solid #2689fc' : 'none'
+      }} 
+      ref={dimensionsControlRef}>
       <textarea
         ref={textareaRef}
         className={styles.textarea}
         value={text}
         onChange={handleTextChange}
         onInput={handleTextareaInput}
+        placeholder="Add text"
       />
     </div>
   );

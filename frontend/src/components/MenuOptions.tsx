@@ -1,18 +1,18 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from "@/styles/components/MenuOptions.module.css";
-import { createNewNode } from '@/utils';
+import { createNewNode, getUrlAlert } from '@/utils';
 
 export function MenuOptions(){
   return (
     <div className={styles.container}>
         <button 
-          onClick={() => createNewNode('square', { text: '' }, 1000)}
+          onClick={() => createNewNode('square', { text: '' }, 2500)}
           className={styles.squareButton}
         >
         </button>
         <button 
-          onClick={() => createNewNode('text', { text: 'Texto padrão...' }, 1500)}
+          onClick={() => createNewNode('text', { text: 'Texto padrão...' }, 3000)}
           className={styles.textButton}
         >
             <Image
@@ -27,6 +27,23 @@ export function MenuOptions(){
           className={styles.dividerButton}
         >
           <div className={styles.divider}></div>
+        </button>
+
+        <button 
+          onClick={ async () => {
+            const image = await getUrlAlert();
+            if(image){
+              createNewNode('image', { url: image }, 2500);
+            }
+          }}
+          className={styles.imageButton}
+        >
+          <Image
+            src="/icons/image.png"
+            alt="Image icon"
+            width={24}
+            height={24}
+          />
         </button>
     </div>
   )

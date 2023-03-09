@@ -28,10 +28,6 @@ export function Text(props: any) {
     setIsFocused(!isFocused);
   }
   
-  function deleteNode() {
-    console.log('delete node');
-    socket.emit('deleteNode', props.data.id);
-  }
 
   function handleTextChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setText(event.target.value);

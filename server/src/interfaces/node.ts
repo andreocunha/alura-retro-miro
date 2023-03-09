@@ -6,5 +6,6 @@ export interface NodeProps {
     type: string;
     position: Coords;
     data: any;
+    zIndex: number;
   }
 }

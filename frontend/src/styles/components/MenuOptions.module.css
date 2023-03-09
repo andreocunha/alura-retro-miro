@@ -17,6 +17,10 @@
   border-radius: 5px 5px 0 0;
 
   background-color: #fff;
+
+  -webkit-box-shadow: 1px 0px 20px 0px rgba(0,0,0,0.4);
+  -moz-box-shadow: 1px 0px 20px 0px rgba(0,0,0,0.4);
+  box-shadow: 1px 0px 20px 0px rgba(0,0,0,0.4);
 }
 
 .squareButton {
@@ -32,10 +36,6 @@
   box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);
 }
 
-.squareButton:hover {
-  height: 55px;
-}
-
 .textButton {
   width: 80px;
   height: 40px;
@@ -47,10 +47,6 @@
   transition: all 0.2s ease-in-out;
 
   box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);
-}
-
-.textButton:hover {
-  height: 55px;
 }
 
 .dividerButton {
@@ -77,6 +73,19 @@
   transform: rotate(45deg);
 }
 
-.dividerButton:hover {
+.imageButton {
+  width: 80px;
+  height: 40px;
+  background-color: #fc2a26;
+  border-radius: 5px 5px 0 0;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);
+}
+
+.container button:hover {
   height: 55px;
 }

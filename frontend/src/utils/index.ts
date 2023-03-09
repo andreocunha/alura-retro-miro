@@ -1,5 +1,6 @@
 import { socket } from "@/services/socket";
 import { GenericNode } from "@/types/interfaces";
+import Swal from "sweetalert2";
 
 export function convertData(data: GenericNode) {
   const newData = Object.entries(data).map(([id, cursor]) => ({
@@ -15,8 +16,8 @@ export function convertData(data: GenericNode) {
 }
 
 export function createNewNode(type: string, data: any, zIndex?: number) {
-  const middleX = window.innerWidth / 2;
-  const middleY = window.innerHeight / 2;
+  const middleX = window.innerWidth / 2 + Math.random() * 100;
+  const middleY = window.innerHeight / 2 + Math.random() * 100;
 
   const newNode = {
     id: `${Math.random()}`,
@@ -39,4 +40,18 @@ export function removeDuplicates(nodes:any) {
   });
   
   return uniqueNodes;
+}
+
+export async function getUrlAlert(){
+  const { value: url } = await Swal.fire({
+    input: 'url',
+    inputLabel: 'Digite a URL',
+    inputPlaceholder: 'Digite a URL',
+    showCancelButton: true,
+  })
+  
+  if (url) {
+    return url;
+  }
+  return null;
 }

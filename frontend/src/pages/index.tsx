@@ -1,16 +1,18 @@
 import styles from '@/styles/Home.module.css'
 import { useEffect, useState } from 'react'
 import { HeadTab } from '../components/HeadTab';
-import ReactFlow, { Controls, Background, useNodesState } from 'reactflow';
+import ReactFlow, { Controls, ControlButton, Background, useNodesState } from 'reactflow';
 import { socket } from '../services/socket';
 import { GenericNode, NodeProps } from '@/types/interfaces';
 import { NODE_TYPES } from '@/types/NodeTypes';
 import { removeDuplicates } from '@/utils';
+import { useTheme } from 'next-themes'
 
 import 'reactflow/dist/style.css';
 import { MenuOptions } from '@/components/MenuOptions';
 
 export default function Home() {
+  const { theme, setTheme } = useTheme()
   const [nodeMoving, setNodeMoving] = useState<GenericNode | null>(null);
   const [zoom, setZoom] = useState(1);
   const [deletedElements, setDeletedElements] = useState<GenericNode[] | null | any>([]);
@@ -76,7 +78,7 @@ export default function Home() {
   },[nodes]);
 
   useEffect(() => {
-    console.log('nodes', nodes);
+    // console.log('nodes', nodes);
     if(nodeMoving) {
       const node = nodes.find((n) => n.id === nodeMoving.id.toString());
       socket.emit('nodeMove', {
@@ -108,7 +110,7 @@ export default function Home() {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, []);
+  }, [deletedElements]);
 
   return (
     <>
@@ -141,7 +143,13 @@ export default function Home() {
             }}
           >
             <Background />
-            <Controls />
+            <Controls>
+              <ControlButton onClick={() => 
+                setTheme(theme === 'dark' ? 'light' : 'dark')
+              }>
+                {theme === 'dark' ? '🌞' : '🌙'}
+              </ControlButton>
+            </Controls>
           </ReactFlow>
         </div>
         

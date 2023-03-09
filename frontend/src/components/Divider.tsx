@@ -2,9 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { socket } from "@/services/socket";
 import styles from "../styles/components/Divider.module.css";
 
-
 export function Divider(props: any) {
-  const dimensionsControlRef = useRef(null);
+  const dimensionsControlRef = useRef<HTMLDivElement>(null);
   const [rotation, setRotation] = useState(props?.data?.data?.rotation || 0);
   const [width, setWidth] = useState(props?.data?.data?.width || 5);
   const [height, setHeight] = useState(props?.data?.data?.height || 150);
@@ -23,7 +22,6 @@ export function Divider(props: any) {
 
   // a function to emit the new width, height and rotation to the server
   function handleStyleChange(width: number, height: number, rotation: number) {
-    console.log('handleStyleChange', width, height, rotation);
     socket.emit('nodeEvent', {
       id: props.data.id,
       type: props.data.type,
@@ -35,7 +33,8 @@ export function Divider(props: any) {
         width: width,
         height: height,
         rotation: rotation
-      }
+      },
+      zIndex: 500
     });
   }
 
@@ -51,6 +50,18 @@ export function Divider(props: any) {
     setHeight(newHeight);
     handleStyleChange(width, newHeight, rotation);
   }
+
+  useEffect(() => {
+    // if press esc key, set isEditing to false
+    const handleKeyDown = (event: { keyCode: number; }) => {
+      if (event.keyCode === 27) {
+        setIsEditing(false);
+      }
+    };
+    return () => {
+      document.addEventListener('keydown', handleKeyDown);
+    };
+  }, [dimensionsControlRef]);
 
   return (
     <div
@@ -68,6 +79,7 @@ export function Divider(props: any) {
           setIsEditing(!isEditing);
         }
       }}
+      
       ref={dimensionsControlRef}
     >
       <div
