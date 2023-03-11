@@ -55,3 +55,25 @@ export async function getUrlAlert(){
   }
   return null;
 }
+
+export async function getFontSize(){
+  // select with Swal
+  const fontSizeList = {
+    '15px': 'pequeno',
+    '30px': 'médio',
+    '50px': 'grande',
+  }
+
+  const { value: fontSize } = await Swal.fire({
+    title: 'Selecione o tamanho da fonte',
+    input: 'select',
+    inputOptions: fontSizeList,
+    inputPlaceholder: 'Selecione o tamanho da fonte',
+    showCancelButton: true,
+  })
+
+  if (fontSize) {
+    return fontSize;
+  }
+  return null;
+}

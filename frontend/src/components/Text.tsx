@@ -47,7 +47,8 @@ export function Text(props: any) {
         y: props.data.yPos
       },
       data: {
-        text: event.target.value
+        text: event.target.value,
+        fontSize: props.data.data.fontSize || '20px',
       },
       zIndex: props.data.zIndex
     });    
@@ -58,6 +59,9 @@ export function Text(props: any) {
     if (textarea) {
       textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
+      
+      textarea.style.width = "auto";
+      textarea.style.width = `${textarea.scrollWidth}px`;
       setSquareHeight(textarea.scrollHeight);
     }
   }, [text])
@@ -76,6 +80,9 @@ export function Text(props: any) {
         value={text}
         onChange={handleTextChange}
         onInput={handleTextareaInput}
+        style={{
+          fontSize: props.data.data.fontSize || '20px',
+        }}
       />
     </div>
   );

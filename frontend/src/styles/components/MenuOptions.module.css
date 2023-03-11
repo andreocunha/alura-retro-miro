@@ -1,7 +1,6 @@
 .container {
   position: absolute;
   bottom: 0;
-  /* center of screen */
   left: 50%;
   transform: translateX(-50%);
   
@@ -20,7 +19,7 @@
 
   -webkit-box-shadow: 1px 0px 20px 0px rgba(0,0,0,0.4);
   -moz-box-shadow: 1px 0px 20px 0px rgba(0,0,0,0.4);
-  box-shadow: 1px 0px 20px 0px rgba(0,0,0,0.4);
+  box-shadow: 1px 0px 8px 0px rgba(0,0,0,0.4);
 }
 
 .squareButton {
@@ -76,7 +75,7 @@
 .imageButton {
   width: 80px;
   height: 40px;
-  background-color: #fc2a26;
+  background-color: #4ab57c;
   border-radius: 5px 5px 0 0;
   border: none;
   outline: none;

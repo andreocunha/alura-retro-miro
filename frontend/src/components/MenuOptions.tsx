@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from "@/styles/components/MenuOptions.module.css";
-import { createNewNode, getUrlAlert } from '@/utils';
+import { createNewNode, getFontSize, getUrlAlert } from '@/utils';
 
 export function MenuOptions(){
   return (
@@ -12,7 +12,12 @@ export function MenuOptions(){
         >
         </button>
         <button 
-          onClick={() => createNewNode('text', { text: 'Texto padrão...' }, 3000)}
+          onClick={ async () => {
+            const fontSize = await getFontSize();
+            if(fontSize){
+              createNewNode('text', { text: 'Texto padrão...', fontSize: fontSize }, 3000)
+            }
+          }}
           className={styles.textButton}
         >
             <Image

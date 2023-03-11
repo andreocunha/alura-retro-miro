@@ -5,6 +5,7 @@ export function handleNode(socket: Socket, nodeCoords: NodeProps, io: any) {
   // listen for node
   socket.on('nodeEvent', async (node: any) => {
     nodeCoords[node.id] = node;
+    console.log('node', node);
     io.emit('nodeCoords', node);
   });
 

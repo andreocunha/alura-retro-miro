@@ -13,5 +13,11 @@
   color: var(--text-color);
   font-weight: 400;
   overflow: hidden;
+  /* allow scroll horizontal */
+  white-space: nowrap;
+  /* allow scroll vertical */
+  word-wrap: break-word;
+  /* allow scroll vertical */
+  word-break: break-all;
   background: transparent;
 }
