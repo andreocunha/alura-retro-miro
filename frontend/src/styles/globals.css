@@ -14,7 +14,7 @@
 }
 
 [data-theme='dark'] {
-  --text-color: #ccc;
+  --text-color: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
