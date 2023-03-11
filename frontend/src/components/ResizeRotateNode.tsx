@@ -1,26 +1,26 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { socket } from "@/services/socket";
-import styles from "../styles/components/Divider.module.css";
+import styles from "../styles/components/ResizeRotateNode.module.css";
 import { NodeResizer } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
 
-export function Divider({ data } : any) {
+export function ResizeRotateNode({ data, children } : any) {
   const dimensionsControlRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
-  const [initialWidth, setInitialWidth] = useState(5);
-  const [initialHeight, setInitialHeight] = useState(150);
+  const [initialWidth, setInitialWidth] = useState(100);
+  const [initialHeight, setInitialHeight] = useState(100);
 
   useEffect(() => {
     if(!isEditing){
-      setInitialWidth(data?.data?.width || 5);
-      setInitialHeight(data?.data?.height || 150);
+      setInitialWidth(data?.data?.width || 100);
+      setInitialHeight(data?.data?.height || 100);
     }
   }, [data]);
 
   return (
     <div
-      className={styles.divider}
+      className={styles.container}
       ref={dimensionsControlRef}
       onDoubleClick={(e) => setIsEditing(true)}
       onClick={(e) => setIsEditing(false)}
@@ -47,6 +47,11 @@ export function Divider({ data } : any) {
           const { width, height } = dimensionsControlRef.current?.getBoundingClientRect() || { width: 5, height: 150 };
           setInitialHeight(height);
           setInitialWidth(width);
+          const newData = {
+            ...data.data,
+            width: width,
+            height: height
+          }
 
           socket.emit('nodeMove', {
             id: data.id,
@@ -55,11 +60,7 @@ export function Divider({ data } : any) {
               x: data.xPos,
               y: data.yPos
             },
-            data: {
-              width: width,
-              height: height,
-              rotation: 0
-            },
+            data: newData,
             zIndex: 500
           });
         }}
@@ -68,6 +69,11 @@ export function Divider({ data } : any) {
           const { width, height } = dimensionsControlRef.current?.getBoundingClientRect() || { width: 5, height: 150 };
           setInitialHeight(height);
           setInitialWidth(width);
+          const newData = {
+            ...data.data,
+            width: width,
+            height: height
+          }
 
           socket.emit('nodeEvent', {
             id: data.id,
@@ -76,15 +82,12 @@ export function Divider({ data } : any) {
               x: data.xPos,
               y: data.yPos
             },
-            data: {
-              width: width,
-              height: height,
-              rotation: 0
-            },
+            data: newData,
             zIndex: 500
           });
         }}
       />
+      {children}
     </div>
   );
 }
