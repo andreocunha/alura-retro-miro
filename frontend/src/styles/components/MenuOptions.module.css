@@ -11,7 +11,7 @@
   align-items: flex-end;
 
   width: 100%;
-  max-width: 600px;
+  max-width: 450px;
   height: 60px;
   border-radius: 5px 5px 0 0;
 
@@ -87,4 +87,22 @@
 
 .container button:hover {
   height: 55px;
+}
+
+@media screen and (max-width: 700px) {
+  .container {
+    width: 70%;
+  }
+  .squareButton {
+    width: 50px;
+  }
+  .textButton {
+    width: 50px;
+  }
+  .dividerButton {
+    width: 50px;
+  }
+  .imageButton {
+    width: 50px;
+  }
 }

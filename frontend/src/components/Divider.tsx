@@ -42,7 +42,7 @@ export function Divider({ data } : any) {
         lineClassName={styles.line}
         handleClassName={styles.handle}
         onResize={(size) => {
-          console.log('onResize')
+          // console.log('onResize')
           setIsResizing(true);
           const { width, height } = dimensionsControlRef.current?.getBoundingClientRect() || { width: 5, height: 150 };
           setInitialHeight(height);

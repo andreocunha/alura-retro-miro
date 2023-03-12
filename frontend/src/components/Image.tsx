@@ -1,5 +1,4 @@
 import React from 'react';
-// import styles from "../styles/components/Image.module.css";
 import { ResizeRotateNode } from './ResizeRotateNode';
 
 export function ImageComponent(props: any) {

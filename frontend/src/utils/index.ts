@@ -77,3 +77,18 @@ export async function getFontSize(){
   }
   return null;
 }
+
+export async function getTextAlert(){
+  const { value: text } = await Swal.fire({
+    input: 'text',
+    inputLabel: 'Digite um nome',
+    inputPlaceholder: 'Digite um nome',
+    showCancelButton: true,
+  })
+  
+  if (text) {
+    // return just the first 21 characters
+    return text.substring(0, 21);
+  }
+  return null;
+}

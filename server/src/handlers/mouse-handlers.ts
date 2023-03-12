@@ -4,6 +4,7 @@ import { getColorById } from '../utils/functions';
 
 export function handleMouseMove(socket: Socket) {
   socket.on('mouseMove', async (coords: Coords) => {
+    const roomId = Array.from(socket.rooms)[1];
     const mouseInfo = {
       id: socket.id,
       type: 'cursor',
@@ -13,6 +14,6 @@ export function handleMouseMove(socket: Socket) {
       },
       zIndex: 5000,
     }
-    socket.broadcast.emit('nodeCoords', mouseInfo);
+    socket.to(roomId).emit('nodeCoords', mouseInfo);
   });
 }
