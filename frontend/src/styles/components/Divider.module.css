@@ -8,13 +8,3 @@
   background-color: #ccc;
   cursor: pointer;
 }
-
-.line {
-  border: 1px solid #1782ff !important;
-}
-
-.handle {
-  width: 10px !important;
-  height: 10px !important;
-  background-color: #1782ff !important;
-}

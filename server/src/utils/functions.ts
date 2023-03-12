@@ -1,4 +1,5 @@
 import { NodeProps } from "../interfaces/node";
+import { RoomProps } from "../interfaces/room";
 import { COLORS } from "./colors";
 
 export function removeNaoNumeros(str: string) {
@@ -31,4 +32,20 @@ export function convertObjToArray(data: NodeProps) {
     zIndex: cursor.zIndex,
   }));
   return newData;
+}
+
+
+export function getAllRooms(rooms: { [key: string]: RoomProps }): any[] {
+  // return an array of all room with id, title, and createdAt
+  const roomArray: any[] = [];
+  for (const roomId in rooms) {
+    if (Object.prototype.hasOwnProperty.call(rooms, roomId)) {
+      roomArray.push({
+        id: roomId,
+        title: rooms[roomId].title,
+        createdAt: rooms[roomId].createdAt
+      });
+    }
+  }
+  return roomArray;
 }

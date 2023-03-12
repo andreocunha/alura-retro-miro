@@ -66,18 +66,8 @@ export function Square(props: any) {
       }
     };
 
-    // if press or click in square, set isClicked to true
-    const handleMouseDown = (event: { target: any; }) => {
-      if (dimensionsControlRef.current?.contains(event.target)) {
-        setIsClicked(true);
-      } else {
-        setIsClicked(false);
-      }
-    };
-
     return () => {
       document.addEventListener('keydown', handleKeyDown);
-      document.addEventListener('click', handleMouseDown);
     };
   }, [dimensionsControlRef]);
 
@@ -89,6 +79,8 @@ export function Square(props: any) {
         minHeight: 150,
         border: isClicked ? '2px solid #2689fc' : 'none'
       }} 
+      onDoubleClick={() => setIsClicked(true)}
+      onClick={() => setIsClicked(false)}
       ref={dimensionsControlRef}>
       <textarea
         ref={textareaRef}
