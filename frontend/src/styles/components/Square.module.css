@@ -14,7 +14,6 @@
   height: 100%;
   background-color: #80CAFF;
   padding: 15px;
-  margin-bottom: 10px;
   border-radius: 5px;
   resize: none;
   border: none;
@@ -24,4 +23,20 @@
   color: #000;
   font-weight: 400;
   overflow: hidden;
+}
+
+.like {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 5px;
+  gap: 5px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  color: #000;
+  height: 20px;
+  width: 60px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }

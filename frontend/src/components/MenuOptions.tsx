@@ -7,7 +7,7 @@ export function MenuOptions(){
   return (
     <div className={styles.container}>
         <button 
-          onClick={() => createNewNode('square', { text: '' }, 2500)}
+          onClick={() => createNewNode('square', { text: '', likes: 0 }, 2500)}
           className={styles.squareButton}
         >
         </button>

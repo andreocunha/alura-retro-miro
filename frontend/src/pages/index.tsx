@@ -12,7 +12,6 @@ export default function Home() {
 
   useEffect(() => {
     socket.on('allRooms', (rooms) => {
-      console.log('rooms', rooms);
       setRooms(rooms);
       setIsLoading(false);
     });
