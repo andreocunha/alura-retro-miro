@@ -5,6 +5,7 @@ export function handleNode(socket: Socket, rooms: { [key: string]: RoomProps }, 
   // listen for node
   socket.on('nodeEvent', async (node: any) => {
     try {
+      console.log('nodeEvent: ', node);
       const roomId = Array.from(socket.rooms)[1];
       rooms[roomId].nodes[node.id] = node;
       io.to(roomId).emit('nodeCoords', node);
