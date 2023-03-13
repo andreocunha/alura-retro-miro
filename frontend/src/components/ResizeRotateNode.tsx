@@ -85,7 +85,7 @@ export function ResizeRotateNode({ data, children } : any) {
               y: data.yPos
             },
             data: newData,
-            zIndex: 500
+            zIndex: data.zIndex
           });
         }}
         onResizeEnd={(size) => {
@@ -107,7 +107,7 @@ export function ResizeRotateNode({ data, children } : any) {
               y: data.yPos
             },
             data: newData,
-            zIndex: 500
+            zIndex: data.zIndex
           });
         }}
       />
