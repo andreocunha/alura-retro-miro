@@ -94,9 +94,6 @@ export default function Room({ room }: any) {
       socket.emit('nodeMove', {
         id: node?.id,
         position: node?.position,
-        type: node?.type,
-        data: node?.data,
-        zIndex: node?.zIndex
       });
     }
 

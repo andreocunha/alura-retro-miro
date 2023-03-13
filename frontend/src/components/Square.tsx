@@ -41,16 +41,10 @@ export function Square(props: any) {
     
     socket.emit('nodeEvent', {
       id: props.data.id,
-      type: props.data.type,
-      position: {
-        x: props.data.xPos,
-        y: props.data.yPos
-      },
       data: {
         text: event.target.value,
         likes: numLikes
       },
-      zIndex: props.data.zIndex
     });
   }
 

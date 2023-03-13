@@ -5,10 +5,17 @@ export function handleNode(socket: Socket, rooms: { [key: string]: RoomProps }, 
   // listen for node
   socket.on('nodeEvent', async (node: any) => {
     try {
-      console.log('nodeEvent: ', node);
+      // console.log('nodeEvent: ', node);
       const roomId = Array.from(socket.rooms)[1];
-      rooms[roomId].nodes[node.id] = node;
-      io.to(roomId).emit('nodeCoords', node);
+      let nodeFromRoom = rooms[roomId].nodes[node.id];
+      // if node already exists, update only the properties changed
+      if (nodeFromRoom) {
+        rooms[roomId].nodes[node.id] = { ...nodeFromRoom, ...node };
+      }
+      else {
+        rooms[roomId].nodes[node.id] = node;
+      }
+      io.to(roomId).emit('nodeCoords', rooms[roomId].nodes[node.id]);
     }
     catch (err) {
       console.log('nodeEvent ERRO: ', err);
@@ -18,8 +25,11 @@ export function handleNode(socket: Socket, rooms: { [key: string]: RoomProps }, 
   socket.on('nodeMove', async (node: any) => {
     try {
       const roomId = Array.from(socket.rooms)[1];
-      rooms[roomId].nodes[node.id] = node;
-      socket.to(roomId).emit('nodeCoords', node);
+      let nodeFromRoom = rooms[roomId].nodes[node.id];
+      // update only the properties changed
+      nodeFromRoom = { ...nodeFromRoom, ...node };
+      rooms[roomId].nodes[node.id] = nodeFromRoom;
+      socket.to(roomId).emit('nodeCoords', nodeFromRoom);
     }
     catch (err) {
       console.log('nodeMove ERRO: ', err);

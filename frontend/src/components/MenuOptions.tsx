@@ -7,7 +7,7 @@ export function MenuOptions(){
   return (
     <div className={styles.container}>
         <button 
-          onClick={() => createNewNode('square', { text: '', likes: 0 }, 3000)}
+          onClick={() => createNewNode('square', { text: '', likes: 0 }, 2300)}
           className={styles.squareButton}
         >
         </button>
@@ -28,7 +28,7 @@ export function MenuOptions(){
             />
         </button>
         <button 
-          onClick={() => createNewNode('divider', { width: 5, height: 150, rotation: 0 }, 500)}
+          onClick={() => createNewNode('divider', { width: 5, height: 150, rotation: 0 }, 100)}
           className={styles.dividerButton}
         >
           <div className={styles.divider}></div>
@@ -38,7 +38,7 @@ export function MenuOptions(){
           onClick={ async () => {
             const image = await getUrlAlert();
             if(image){
-              createNewNode('image', { url: image }, 2000);
+              createNewNode('image', { url: image }, 1200);
             }
           }}
           className={styles.imageButton}

@@ -79,13 +79,7 @@ export function ResizeRotateNode({ data, children } : any) {
 
           socket.emit('nodeMove', {
             id: data.id,
-            type: data.type,
-            position: {
-              x: data.xPos,
-              y: data.yPos
-            },
             data: newData,
-            zIndex: data.zIndex
           });
         }}
         onResizeEnd={(size) => {
@@ -101,13 +95,7 @@ export function ResizeRotateNode({ data, children } : any) {
 
           socket.emit('nodeEvent', {
             id: data.id,
-            type: data.type,
-            position: {
-              x: data.xPos,
-              y: data.yPos
-            },
             data: newData,
-            zIndex: data.zIndex
           });
         }}
       />
