@@ -7,7 +7,7 @@ export function MenuOptions(){
   return (
     <div className={styles.container}>
         <button 
-          onClick={() => createNewNode('square', { text: '', likes: 0 }, 2700)}
+          onClick={() => createNewNode('square', { text: '', likes: 0 }, 3000)}
           className={styles.squareButton}
         >
         </button>
@@ -15,7 +15,7 @@ export function MenuOptions(){
           onClick={ async () => {
             const fontSize = await getFontSize();
             if(fontSize){
-              createNewNode('text', { text: 'Texto padrão...', fontSize: fontSize }, 3000)
+              createNewNode('text', { text: 'Texto padrão...', fontSize: fontSize }, 3500)
             }
           }}
           className={styles.textButton}
@@ -38,7 +38,7 @@ export function MenuOptions(){
           onClick={ async () => {
             const image = await getUrlAlert();
             if(image){
-              createNewNode('image', { url: image }, 2500);
+              createNewNode('image', { url: image }, 2000);
             }
           }}
           className={styles.imageButton}
