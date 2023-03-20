@@ -19,14 +19,14 @@ export function Square(props: any) {
   useEffect(() => {
     if(!isTyping){
       setText(props.data.data.text);
+      setColor(props.data.data.color);
     }
-    setColor(props.data.data.color);
     setNumLikes(props.data.data.likes);
   }, [props]);
 
   useEffect(() => {
     sendChange();
-  }, [text, color]);
+  }, [color]);
 
   function handleTextareaInput() {
     const textarea = textareaRef.current;
@@ -56,6 +56,16 @@ export function Square(props: any) {
     typingTimeoutRef.current = setTimeout(() => {
       setIsTyping(false);
     }, 500);
+
+        
+    socket.emit('nodeEvent', {
+      id: props.data.id,
+      data: {
+        text: event.target.value,
+        likes: numLikes,
+        color: color,
+      },
+    });
   }
 
   useEffect(() => {
