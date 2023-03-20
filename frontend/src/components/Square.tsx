@@ -25,7 +25,9 @@ export function Square(props: any) {
   }, [props]);
 
   useEffect(() => {
-    sendChange();
+    if(isClicked){
+      sendChange();
+    }
   }, [color]);
 
   function handleTextareaInput() {
