@@ -27,6 +27,7 @@ export function Square(props: any) {
   useEffect(() => {
     if(isClicked){
       sendChange();
+      console.log('send change');
     }
   }, [color]);
 
@@ -39,7 +40,7 @@ export function Square(props: any) {
   }
 
   function sendChange() {
-    socket.emit("nodeMove", {
+    socket.emit("nodeEvent", {
       id: props.data.id,
       data: {
         text: text,

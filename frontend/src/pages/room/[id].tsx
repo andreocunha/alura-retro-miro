@@ -56,8 +56,6 @@ export default function Room({ room }: any) {
 
       // remove duplicate nodes
       const nodesWithoutDuplicates = removeDuplicates(nodes);
-
-      console.log('aquii')
   
       if (nodeIndex !== -1) {
         const newNodes = [...nodesWithoutDuplicates];
