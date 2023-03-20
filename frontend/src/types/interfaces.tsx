@@ -28,3 +28,16 @@ export interface GenericNode {
   }
 }
 
+// export enum of GenericColors
+export enum GenericColors {
+  azul = '#80CAFF',
+  vermelho = '#ff8080',
+  verde = '#80ff84',
+  amarelo = '#ffec80',
+  laranja = '#ffcc80',
+  roxo = '#c280ff',
+  rosa = '#ff80e5',
+  cinza = '#cccccc',
+  preto = '#000000',
+  branco = '#ffffff',
+}

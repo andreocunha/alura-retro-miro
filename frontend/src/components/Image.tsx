@@ -11,7 +11,7 @@ export function ImageComponent(props: any) {
         width="100%"
         height="100%"
         style={{
-          minWidth: 100,
+          minWidth: 10,
         }}
       />  
     </ResizeRotateNode>

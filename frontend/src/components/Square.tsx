@@ -1,10 +1,12 @@
 import { socket } from "@/services/socket";
 import React, { useState, useRef, useEffect } from "react";
 import styles from "../styles/components/Square.module.css";
+import { CustomizeNode } from "./CustomizeNode";
 import { Heart } from "./Heart";
 
 export function Square(props: any) {
   const [text, setText] = useState(props.data.data.text);
+  const [color, setColor] = useState(props.data.data.color || "#80CAFF");
   const [numLikes, setNumLikes] = useState(props.data.data.likes || 0);
   const [squareHeight, setSquareHeight] = useState(100);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -18,8 +20,13 @@ export function Square(props: any) {
     if(!isTyping){
       setText(props.data.data.text);
     }
+    setColor(props.data.data.color);
     setNumLikes(props.data.data.likes);
   }, [props]);
+
+  useEffect(() => {
+    sendChange();
+  }, [text, color]);
 
   function handleTextareaInput() {
     const textarea = textareaRef.current;
@@ -27,6 +34,17 @@ export function Square(props: any) {
     textarea.style.height = "auto";
     textarea.style.height = `${textarea.scrollHeight}px`;
     setSquareHeight(textarea.scrollHeight);
+  }
+
+  function sendChange() {
+    socket.emit("nodeMove", {
+      id: props.data.id,
+      data: {
+        text: text,
+        likes: numLikes,
+        color: color,
+      },
+    });
   }
 
   function handleTextChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -38,14 +56,6 @@ export function Square(props: any) {
     typingTimeoutRef.current = setTimeout(() => {
       setIsTyping(false);
     }, 500);
-    
-    socket.emit('nodeEvent', {
-      id: props.data.id,
-      data: {
-        text: event.target.value,
-        likes: numLikes
-      },
-    });
   }
 
   useEffect(() => {
@@ -81,11 +91,15 @@ export function Square(props: any) {
       style={{ 
         height: `${squareHeight + 10}px`, 
         minHeight: 150,
-        border: isClicked ? '2px solid #2689fc' : 'none'
+        border: isClicked ? '2px solid #2689fc' : 'none',
+        backgroundColor: color,
       }} 
-      onDoubleClick={() => setIsClicked(true)}
-      onClick={() => setIsClicked(false)}
+      onDoubleClick={() => setIsClicked(!isClicked)}
       ref={dimensionsControlRef}>
+        {isClicked && <CustomizeNode 
+          color={color}
+          setColor={setColor}
+        />}
       <textarea
         ref={textareaRef}
         className={styles.textarea}

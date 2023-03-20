@@ -125,6 +125,8 @@ export default function Room({ room }: any) {
       <main className={styles.main}>
         <div style={{ height: '100vh', width: '100%' }}>
           <ReactFlow
+            maxZoom={5}
+            minZoom={0.1}
             nodeTypes={NODE_TYPES}
             nodes={nodes}
             onNodesChange={onNodesChange}

@@ -11,11 +11,11 @@ export function configureSockets(io: Server): void {
   io.on('connection', (socket: any) => {
     console.log('new user: ', socket.id);
     
-    // wait 1 second and emit all rooms id as array
+    // wait 2 seconds and emit all rooms id as array
     setTimeout(() => {
       const roomArray = getAllRooms(rooms);
       socket.emit('allRooms', roomArray);
-    }, 1000);
+    }, 2000);
 
     socket.on('disconnect', () => {
       console.log('user disconnected: ', socket.id);

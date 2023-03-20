@@ -15,7 +15,9 @@ export function handleNode(socket: Socket, rooms: { [key: string]: RoomProps }, 
       else {
         rooms[roomId].nodes[node.id] = node;
       }
-      io.to(roomId).emit('nodeCoords', rooms[roomId].nodes[node.id]);
+      if(rooms[roomId].nodes[node.id].type !== undefined){
+        io.to(roomId).emit('nodeCoords', rooms[roomId].nodes[node.id]);
+      }
     }
     catch (err) {
       console.log('nodeEvent ERRO: ', err);
@@ -29,7 +31,9 @@ export function handleNode(socket: Socket, rooms: { [key: string]: RoomProps }, 
       // update only the properties changed
       nodeFromRoom = { ...nodeFromRoom, ...node };
       rooms[roomId].nodes[node.id] = nodeFromRoom;
-      socket.to(roomId).emit('nodeCoords', nodeFromRoom);
+      if(rooms[roomId].nodes[node.id].type !== undefined){
+        socket.to(roomId).emit('nodeCoords', nodeFromRoom);
+      }
     }
     catch (err) {
       console.log('nodeMove ERRO: ', err);
