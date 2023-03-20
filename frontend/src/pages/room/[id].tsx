@@ -50,6 +50,7 @@ export default function Room({ room }: any) {
     socket.on('nodeCoords', (node: NodeProps) => {
       if (!node || Object.keys(node).length === 0) return;
       // console.log('node', node);
+      if(node.id === nodeMoving?.id.toString()) return;
   
       const nodeIndex = nodes.findIndex((n) => n?.id === node.id.toString());
 
