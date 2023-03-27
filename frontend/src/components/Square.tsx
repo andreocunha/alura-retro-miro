@@ -1,4 +1,5 @@
 import { socket } from "@/services/socket";
+import { GenericColors } from "@/types/interfaces";
 import React, { useState, useRef, useEffect } from "react";
 import styles from "../styles/components/Square.module.css";
 import { CustomizeNode } from "./CustomizeNode";
@@ -6,7 +7,7 @@ import { Heart } from "./Heart";
 
 export function Square(props: any) {
   const [text, setText] = useState(props.data.data.text);
-  const [color, setColor] = useState(props.data.data.color || "#80CAFF");
+  const [color, setColor] = useState(props.data.data.color || GenericColors.azul);
   const [numLikes, setNumLikes] = useState(props.data.data.likes || 0);
   const [squareHeight, setSquareHeight] = useState(100);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -27,7 +28,6 @@ export function Square(props: any) {
   useEffect(() => {
     if(isClicked){
       sendChange();
-      console.log('send change');
     }
   }, [color]);
 
@@ -110,7 +110,7 @@ export function Square(props: any) {
       onDoubleClick={() => setIsClicked(!isClicked)}
       ref={dimensionsControlRef}>
         {isClicked && <CustomizeNode 
-          color={color}
+          color={color || GenericColors.azul}
           setColor={setColor}
         />}
       <textarea

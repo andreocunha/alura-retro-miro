@@ -3,10 +3,12 @@ import styles from "@/styles/components/Cursor.module.css";
 
 type Props = {
   color: string;
+  name?: string;
 };
 
-export function Cursor({ color="#ccc" }: Props) {
+export function Cursor({ color="#ccc", name="Anônimo" }: Props) {
   return (
+    <>
     <svg
       width="24"
       height="36"
@@ -20,5 +22,7 @@ export function Cursor({ color="#ccc" }: Props) {
         fill={color}
       />
     </svg>
+    {name && <div className={styles.name} style={{ backgroundColor: color }}>{name}</div>}
+    </>
   );
 }

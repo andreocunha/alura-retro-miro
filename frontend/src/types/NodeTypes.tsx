@@ -9,8 +9,8 @@ import { ImageComponent } from '../components/Image';
 const NODE_TYPES = {
   square: (props: NodeProps<any>) => <Square data={props} />,
   cursor: (props: NodeProps<any>) => {
-    const { color } = props.data;
-    return <Cursor color={color}/>;
+    const { color, name } = props.data;
+    return <Cursor color={color} name={name}/>;
   },
   reference: (props: NodeProps<any>) => <Reference data={props.data} />,
   text: (props: NodeProps<any>) => <Text data={props} />,

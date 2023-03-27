@@ -1,3 +1,11 @@
 .cursor {
   transition: all 0.3s ease-out; /* add transition property */
 }
+
+.name {
+  background: red;
+  padding: 1px 4px;
+  transform: translateY(-20px) translateX(10px); /* add transform property */
+  font-size: 0.8rem;
+  font-family: 'Roboto', sans-serif;
+}

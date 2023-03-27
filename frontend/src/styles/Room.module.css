@@ -5,3 +5,14 @@
   min-height: 100vh;
   background: linear-gradient(to bottom, #041834, #0A2E5B, #14437D);
 }
+
+
+.inputName {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 100px;
+  padding: 5px;
+  border-radius: 5px;
+  z-index: 1000;
+}

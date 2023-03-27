@@ -13,6 +13,9 @@ import { MenuOptions } from '@/components/MenuOptions';
 
 export default function Room({ room }: any) {
   const { theme, setTheme } = useTheme()
+  const isBrowser = typeof window !== "undefined";
+  const localStorageName = isBrowser ? localStorage.getItem("name") : null;
+  const [name, setName] = useState(localStorageName || ''); 
   const [nodeMoving, setNodeMoving] = useState<GenericNode | null>(null);
   const [zoom, setZoom] = useState(1);
   const [deletedElements, setDeletedElements] = useState<GenericNode[] | null | any>([]);
@@ -120,6 +123,20 @@ export default function Room({ room }: any) {
     };
   }, [deletedElements]);
 
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "name") {
+        setName(e.newValue || "Anônimo");
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   return (
     <>
       <HeadTab title="Alura Retro Miro" />
@@ -143,7 +160,7 @@ export default function Room({ room }: any) {
               const nodeRect = nodeElement.getBoundingClientRect();
               const x = (e.clientX - nodeRect.left) / zoom;
               const y = (e.clientY - nodeRect.top) / zoom;
-              socket.emit('mouseMove', { x, y });
+              socket.emit('mouseMove', { x, y }, name);
             }}
             onNodesDelete={(nodes) => {
               if(nodes[0]){
@@ -164,6 +181,15 @@ export default function Room({ room }: any) {
         </div>
         
         <MenuOptions />
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+            localStorage.setItem("name", e.target.value);
+          }}
+          className={styles.inputName}
+        />
       </main>
     </>
   )

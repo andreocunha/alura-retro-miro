@@ -1,7 +1,7 @@
 import { CardBoard } from '@/components/CardBoard';
 import { socket } from '@/services/socket';
 import styles from '@/styles/Home.module.css'
-import { getTextAlert } from '@/utils';
+import { getPasswordAlert, getTextAlert } from '@/utils';
 import Image from 'next/image';
 import { useEffect, useState } from 'react'
 import { HeadTab } from '../components/HeadTab';
@@ -34,8 +34,8 @@ export default function Home() {
         <button 
           className={styles.button}
           onClick={async () => {
-            const roomTitle = await getTextAlert()
-            if(roomTitle) socket.emit('createRoom', `${Date.now()}`, roomTitle);
+            const {title, password} = await getTextAlert();
+            if(title && password) socket.emit('createRoom', `${Date.now()}`, title, password);
           }}
         >Novo board
         </button>
@@ -51,6 +51,10 @@ export default function Home() {
             <CardBoard 
               key={index} 
               onClick={() => window.location.href = `/room/${room.id}`}
+              onDelete={async () => {
+                const password = await getPasswordAlert();
+                if(password) socket.emit('deleteRoom', room.id, password);
+              }}
               title={room.title}
               createdAt={room.createdAt}
             />

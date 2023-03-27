@@ -49,3 +49,11 @@ export function getAllRooms(rooms: { [key: string]: RoomProps }): any[] {
   }
   return roomArray;
 }
+
+export function isDifferent(rooms: any, prevRooms: any) {
+  // if different, emit allRooms
+  if (JSON.stringify(rooms) !== JSON.stringify(prevRooms)) {
+    return true;
+  }
+  return false;
+}

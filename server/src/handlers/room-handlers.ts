@@ -3,7 +3,7 @@ import { RoomProps } from "../interfaces/room";
 import { convertObjToArray, getAllRooms } from "../utils/functions";
 
 export function handleRoom(socket: Socket, rooms: { [key: string]: RoomProps }, io: any) {
-  socket.on('createRoom', (roomId: string, title: string) => {
+  socket.on('createRoom', (roomId: string, title: string, password: string) => {
     // verify room does not exist
     if (rooms[roomId]) {
       console.log('room already exists: ', roomId);
@@ -12,7 +12,8 @@ export function handleRoom(socket: Socket, rooms: { [key: string]: RoomProps }, 
     }
     rooms[roomId] = {
       title: title,
-      createdAt: new Date().toLocaleDateString(),
+      password: password,
+      createdAt: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
       nodes: {}
     };
     console.log('room created: ', roomId);
@@ -33,4 +34,25 @@ export function handleRoom(socket: Socket, rooms: { [key: string]: RoomProps }, 
     socket.emit('loadNodes', nodeArray);
     console.log('user joined room: ', roomId);
   });
+
+  socket.on('deleteRoom', (roomId: string, password: string) => {
+    // verify room exists
+    if (!rooms[roomId]) {
+      console.log('room does not exist: ', roomId);
+      socket.emit('roomDoesNotExist');
+      return;
+    }
+
+    // verify password
+    if (rooms[roomId].password !== password) {
+      console.log('incorrect password: ', roomId);
+      socket.emit('incorrectPassword');
+      return;
+    }
+
+    delete rooms[roomId];
+    console.log('room deleted: ', roomId);
+    const roomArray = getAllRooms(rooms);
+    io.emit('allRooms', roomArray);
+  })
 }

@@ -1,12 +1,13 @@
 .container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 
-  width: 150px;
+  min-width: 150px;
   height: 25px;
   padding: 5px;
+  gap: 5px;
 
   background-color: #c2c2c2;
   border-radius: 2px;

@@ -3,7 +3,7 @@ import { Socket } from 'socket.io';
 import { getColorById } from '../utils/functions';
 
 export function handleMouseMove(socket: Socket) {
-  socket.on('mouseMove', async (coords: Coords) => {
+  socket.on('mouseMove', async (coords: Coords, name: string) => {
     const roomId = Array.from(socket.rooms)[1];
     const mouseInfo = {
       id: socket.id,
@@ -11,6 +11,7 @@ export function handleMouseMove(socket: Socket) {
       position: coords,
       data: {
         color: getColorById(socket.id),
+        name,
       },
       zIndex: 5000,
     }

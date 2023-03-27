@@ -41,3 +41,11 @@ export enum GenericColors {
   preto = '#000000',
   branco = '#ffffff',
 }
+
+export enum GenericZIndex {
+  camada1 = '100',
+  camada2 = '1200',
+  camada3 = '2300',
+  camada4 = '3500',
+  camada5 = '4000'
+}

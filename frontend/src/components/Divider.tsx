@@ -1,15 +1,16 @@
 import { socket } from '@/services/socket';
+import { GenericColors } from '@/types/interfaces';
 import React, { useEffect } from 'react';
 import styles from "../styles/components/Divider.module.css";
 import { CustomizeNode } from './CustomizeNode';
 import { ResizeRotateNode } from './ResizeRotateNode';
 
 export function Divider({ data } : any) {
-  const [color, setColor] = React.useState(data.data.color || "#ccc");
+  const [color, setColor] = React.useState(data.data.color || GenericColors.cinza);
   const [isEditing, setIsEditing] = React.useState(false);
 
   function sendChange() {
-    socket.emit('nodeMove', {
+    socket.emit('nodeEvent', {
       id: data.id,
       data: {
         color: color,
@@ -20,12 +21,16 @@ export function Divider({ data } : any) {
   }
 
   useEffect(() => {
-    setColor(data.data.color);
-  }, [data]);
+    if(isEditing) {
+      sendChange();
+    }
+  }, [color]);
 
   useEffect(() => {
-    sendChange();
-  }, [color]);
+    if(!isEditing) {
+      setColor(data.data.color);
+    }
+  }, [data.data.color]);
 
   return (
     <ResizeRotateNode data={data}>
@@ -36,7 +41,7 @@ export function Divider({ data } : any) {
       {
         isEditing && (
           <CustomizeNode
-            color={color}
+            color={color || GenericColors.cinza}
             setColor={setColor}
           />
         )

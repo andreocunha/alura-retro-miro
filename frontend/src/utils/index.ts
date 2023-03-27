@@ -81,14 +81,41 @@ export async function getFontSize(){
 export async function getTextAlert(){
   const { value: title } = await Swal.fire({
     input: 'text',
-    inputLabel: 'Digite um nome',
-    inputPlaceholder: 'Digite um nome',
+    inputLabel: 'Nome do board',
+    inputPlaceholder: 'Nome do board',
     showCancelButton: true,
   })
+
+  const { value: password } = await Swal.fire({
+    input: 'password',
+    inputLabel: 'Senha do board',
+    inputPlaceholder: 'Senha do board',
+    showCancelButton: true,
+    });
   
-  if (title) {
+  if (title && password) {
     // return just the first 21 characters
-    return title.substring(0, 21);
+    return {
+      title: title.substring(0, 21),
+      password: password
+    }
+  }
+  return {
+    title: null,
+    password: null
+  }
+}
+
+export async function getPasswordAlert(){
+  const { value: password } = await Swal.fire({
+    input: 'password',
+    inputLabel: 'Senha do board',
+    inputPlaceholder: 'Senha do board',
+    showCancelButton: true,
+    });
+  
+  if (password) {
+    return password;
   }
   return null;
 }
