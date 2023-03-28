@@ -9,12 +9,12 @@ export function ResizeRotateNode({ data, children } : any) {
   const dimensionsControlRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
-  const [initialWidth, setInitialWidth] = useState(100);
-  const [initialHeight, setInitialHeight] = useState(100);
+  const [initialWidth, setInitialWidth] = useState(data?.data?.width || 100);
+  const [initialHeight, setInitialHeight] = useState(data?.data?.height || 100);
   const [hasCopied, setHasCopied] = useState(false);
 
   useEffect(() => {
-    if(!isEditing){
+    if(!isResizing){
       setInitialWidth(data?.data?.width || 100);
       setInitialHeight(data?.data?.height || 100);
     }
@@ -41,6 +41,10 @@ export function ResizeRotateNode({ data, children } : any) {
       window.removeEventListener('keydown', handleKeyDown);
     }
   },[dimensionsControlRef, isEditing, initialHeight, initialWidth, hasCopied]);
+
+  async function delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
 
   return (
     <div
@@ -82,7 +86,7 @@ export function ResizeRotateNode({ data, children } : any) {
             data: newData,
           });
         }}
-        onResizeEnd={(size) => {
+        onResizeEnd={async (size) => {
           setIsResizing(false);
           const { width, height } = dimensionsControlRef.current?.getBoundingClientRect() || { width: 5, height: 150 };
           setInitialHeight(height);
@@ -93,6 +97,7 @@ export function ResizeRotateNode({ data, children } : any) {
             height: height
           }
 
+          await delay(100);
           socket.emit('nodeEvent', {
             id: data.id,
             data: newData,

@@ -36,7 +36,10 @@ export function Divider({ data } : any) {
     <ResizeRotateNode data={data}>
       <div className={styles.divider}
         onDoubleClick={(e) => setIsEditing(!isEditing)}
-        style={{ backgroundColor: color, filter: 'brightness(0.8)' }}
+        style={{ 
+          backgroundColor: color, 
+          filter: 'brightness(0.8)'
+        }}
       />
       {
         isEditing && (
