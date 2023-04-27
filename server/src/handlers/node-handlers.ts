@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io';
 import { RoomProps } from '../interfaces/room';
+import { delay } from '../utils/functions';
 
 export function handleNode(socket: Socket, rooms: { [key: string]: RoomProps }, io: any) {
   // listen for node
@@ -41,6 +42,7 @@ export function handleNode(socket: Socket, rooms: { [key: string]: RoomProps }, 
   });
 
   socket.on('nodeResizeEnd', async (node: any) => {
+    await delay(100)
     try {
       const roomId = Array.from(socket.rooms)[1];
       let nodeFromRoom = rooms[roomId].nodes[node.id];
@@ -48,7 +50,7 @@ export function handleNode(socket: Socket, rooms: { [key: string]: RoomProps }, 
       nodeFromRoom = { ...nodeFromRoom, ...node };
       rooms[roomId].nodes[node.id] = nodeFromRoom;
       if(rooms[roomId].nodes[node.id].type !== undefined){
-        io.to(roomId).emit('nodeCoords', nodeFromRoom);
+        io.to(roomId).emit('resizeEnd', nodeFromRoom);
       }
     }
     catch (err) {

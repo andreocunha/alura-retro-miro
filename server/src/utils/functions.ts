@@ -57,3 +57,7 @@ export function isDifferent(rooms: any, prevRooms: any) {
   }
   return false;
 }
+
+export async function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

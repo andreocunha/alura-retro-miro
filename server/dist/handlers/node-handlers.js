@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleNode = void 0;
+const functions_1 = require("../utils/functions");
 function handleNode(socket, rooms, io) {
     // listen for node
     socket.on('nodeEvent', (node) => __awaiter(this, void 0, void 0, function* () {
@@ -45,6 +46,22 @@ function handleNode(socket, rooms, io) {
         }
         catch (err) {
             console.log('nodeMove ERRO: ', err);
+        }
+    }));
+    socket.on('nodeResizeEnd', (node) => __awaiter(this, void 0, void 0, function* () {
+        yield (0, functions_1.delay)(100);
+        try {
+            const roomId = Array.from(socket.rooms)[1];
+            let nodeFromRoom = rooms[roomId].nodes[node.id];
+            // update only the properties changed
+            nodeFromRoom = Object.assign(Object.assign({}, nodeFromRoom), node);
+            rooms[roomId].nodes[node.id] = nodeFromRoom;
+            if (rooms[roomId].nodes[node.id].type !== undefined) {
+                io.to(roomId).emit('resizeEnd', nodeFromRoom);
+            }
+        }
+        catch (err) {
+            console.log('nodeResize ERRO: ', err);
         }
     }));
     socket.on('nodeLiked', (nodeId, increment) => __awaiter(this, void 0, void 0, function* () {

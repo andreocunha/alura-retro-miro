@@ -37,6 +37,27 @@ export default function Room({ room }: any) {
     socket.emit('joinRoom', room);
   }, []);
 
+  function updateNode(node: NodeProps) {
+    if (!node || Object.keys(node).length === 0) return;
+    // console.log('node', node);
+    if(node.id === nodeMoving?.id.toString()) return;
+
+    const nodeIndex = nodes.findIndex((n) => n?.id === node.id.toString());
+
+    // remove duplicate nodes
+    const nodesWithoutDuplicates = removeDuplicates(nodes);
+
+    if (nodeIndex !== -1) {
+      const newNodes = [...nodesWithoutDuplicates];
+      newNodes[nodeIndex] = node;
+      setNodes(newNodes);
+    } else {
+      // add in nodesWithoutDuplicates the new node
+      const newNodes = [...nodesWithoutDuplicates, node];
+      setNodes(newNodes);
+    }
+  }
+
 
   useEffect(() => {
     socket.on('roomDoesNotExist', () => {
@@ -51,24 +72,11 @@ export default function Room({ room }: any) {
     });
 
     socket.on('nodeCoords', (node: NodeProps) => {
-      if (!node || Object.keys(node).length === 0) return;
-      // console.log('node', node);
-      if(node.id === nodeMoving?.id.toString()) return;
-  
-      const nodeIndex = nodes.findIndex((n) => n?.id === node.id.toString());
+      updateNode(node);
+    });
 
-      // remove duplicate nodes
-      const nodesWithoutDuplicates = removeDuplicates(nodes);
-  
-      if (nodeIndex !== -1) {
-        const newNodes = [...nodesWithoutDuplicates];
-        newNodes[nodeIndex] = node;
-        setNodes(newNodes);
-      } else {
-        // add in nodesWithoutDuplicates the new node
-        const newNodes = [...nodesWithoutDuplicates, node];
-        setNodes(newNodes);
-      }
+    socket.on('resizeEnd', (node: NodeProps) => {
+      updateNode(node);
     });
 
     socket.on('nodeDeleted', (nodeId: string) => {

@@ -42,9 +42,11 @@ export function ResizeRotateNode({ data, children } : any) {
     }
   },[dimensionsControlRef, isEditing, initialHeight, initialWidth, hasCopied]);
 
-  async function delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-  }
+  useEffect(() => {
+    socket.on('resizeEnd', (node) => {
+      setIsResizing(false);
+    });
+  },[])
 
   return (
     <div
@@ -90,7 +92,6 @@ export function ResizeRotateNode({ data, children } : any) {
           });
         }}
         onResizeEnd={async (size) => {
-          setIsResizing(false);
           const { width, height } = dimensionsControlRef.current?.getBoundingClientRect() || { width: 5, height: 150 };
 
           const newData = {
