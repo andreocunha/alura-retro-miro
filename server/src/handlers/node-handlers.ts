@@ -40,6 +40,22 @@ export function handleNode(socket: Socket, rooms: { [key: string]: RoomProps }, 
     }
   });
 
+  socket.on('nodeResizeEnd', async (node: any) => {
+    try {
+      const roomId = Array.from(socket.rooms)[1];
+      let nodeFromRoom = rooms[roomId].nodes[node.id];
+      // update only the properties changed
+      nodeFromRoom = { ...nodeFromRoom, ...node };
+      rooms[roomId].nodes[node.id] = nodeFromRoom;
+      if(rooms[roomId].nodes[node.id].type !== undefined){
+        io.to(roomId).emit('nodeCoords', nodeFromRoom);
+      }
+    }
+    catch (err) {
+      console.log('nodeResize ERRO: ', err);
+    }
+  });
+
   socket.on('nodeLiked', async (nodeId: string, increment: boolean) => {
     try {
       const roomId = Array.from(socket.rooms)[1];
