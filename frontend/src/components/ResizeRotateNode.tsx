@@ -75,12 +75,15 @@ export function ResizeRotateNode({ data, children } : any) {
           const { width, height } = dimensionsControlRef.current?.getBoundingClientRect() || { width: 5, height: 150 };
           setInitialHeight(height);
           setInitialWidth(width);
+          // widthEnd = width;
+          // heightEnd = height;
+
           const newData = {
             ...data.data,
             width: width,
             height: height
           }
-
+          
           socket.emit('nodeMove', {
             id: data.id,
             data: newData,
@@ -89,19 +92,16 @@ export function ResizeRotateNode({ data, children } : any) {
         onResizeEnd={async (size) => {
           setIsResizing(false);
           const { width, height } = dimensionsControlRef.current?.getBoundingClientRect() || { width: 5, height: 150 };
-          setInitialHeight(height);
-          setInitialWidth(width);
+
           const newData = {
             ...data.data,
             width: width,
             height: height
           }
-
-          await delay(100);
-          socket.emit('nodeEvent', {
+          socket.emit('nodeResizeEnd', {
             id: data.id,
             data: newData,
-          });
+          }); 
         }}
       />
       {children}
